@@ -1,31 +1,33 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
-# For more information, please see https://aka.ms/containercompat
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809 AS base
+# Giai đoạn 1: Base Image (Dùng để chạy ứng dụng)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
+# Giai đoạn 2: Build Image (Dùng SDK để compile code)
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["WEBPC_API/WEBPC_API.csproj", "WEBPC_API/"]
-RUN dotnet restore "./WEBPC_API/WEBPC_API.csproj"
-COPY . .
-WORKDIR "/src/WEBPC_API"
-RUN dotnet build "./WEBPC_API.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# --- LƯU Ý QUAN TRỌNG: COPY file .csproj ---
+# Dòng dưới đây giả định file Dockerfile NẰM CÙNG CẤP với file WEBPC_API.csproj
+# Nếu Dockerfile đang nằm chung với file .csproj, hãy dùng dòng này:
+COPY ["WEBPC_API.csproj", "."]
+RUN dotnet restore "./WEBPC_API.csproj"
+
+# Copy toàn bộ source code vào
+COPY . .
+WORKDIR "/src/."
+
+# Build dự án (Lưu ý: dùng $ thay vì % trên Linux)
+RUN dotnet build "./WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Giai đoạn 3: Publish (Đóng gói)
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WEBPC_API.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# Giai đoạn 4: Final (Tạo Image cuối cùng)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
