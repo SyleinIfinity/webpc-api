@@ -1,33 +1,35 @@
-# Giai đoạn 1: Base Image (Dùng để chạy ứng dụng)
+# 1. Dùng Image Linux (Sửa lỗi nanoserver của Windows)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-# Giai đoạn 2: Build Image (Dùng SDK để compile code)
+# 2. Build Image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# --- LƯU Ý QUAN TRỌNG: COPY file .csproj ---
-# Dòng dưới đây giả định file Dockerfile NẰM CÙNG CẤP với file WEBPC_API.csproj
-# Nếu Dockerfile đang nằm chung với file .csproj, hãy dùng dòng này:
-COPY ["WEBPC_API.csproj", "."]
-RUN dotnet restore "./WEBPC_API.csproj"
+# --- QUAN TRỌNG: Copy giữ nguyên cấu trúc thư mục ---
+# Vì Root Directory để trống, ta đang đứng ở ngoài cùng
+# Nên cần copy từ folder WEBPC_API vào trong Image
+COPY ["WEBPC_API/WEBPC_API.csproj", "WEBPC_API/"]
 
-# Copy toàn bộ source code vào
+# Restore các thư viện
+RUN dotnet restore "WEBPC_API/WEBPC_API.csproj"
+
+# Copy toàn bộ code vào
 COPY . .
-WORKDIR "/src/."
 
-# Build dự án (Lưu ý: dùng $ thay vì % trên Linux)
-RUN dotnet build "./WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Chuyển hướng vào thư mục chứa code chính để Build
+WORKDIR "/src/WEBPC_API"
+RUN dotnet build "WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Giai đoạn 3: Publish (Đóng gói)
+# 3. Publish
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Giai đoạn 4: Final (Tạo Image cuối cùng)
+# 4. Final
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
