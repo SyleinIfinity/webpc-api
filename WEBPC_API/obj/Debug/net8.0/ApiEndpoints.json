@@ -909,6 +909,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WEBPC_API.Controllers.TaiKhoanController",
+    "Method": "Login",
+    "RelativePath": "api/TaiKhoan/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WEBPC_API.Models.DTOs.Requests.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WEBPC_API.Controllers.ThongSoKyThuatController",
     "Method": "Create",
     "RelativePath": "api/ThongSoKyThuat",

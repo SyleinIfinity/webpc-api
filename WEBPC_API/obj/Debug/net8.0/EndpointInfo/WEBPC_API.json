@@ -1410,6 +1410,37 @@
         }
       }
     },
+    "/api/TaiKhoan/login": {
+      "post": {
+        "tags": [
+          "TaiKhoan"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/TaiKhoan": {
       "get": {
         "tags": [
@@ -1872,6 +1903,24 @@
           "matKhau": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginRequest": {
+        "required": [
+          "matKhau",
+          "tenDangNhap"
+        ],
+        "type": "object",
+        "properties": {
+          "tenDangNhap": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "matKhau": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

@@ -9,8 +9,14 @@ using System.IO;
 using System;
 using WEBPC_API.Repositories.Implements;
 using WEBPC_API.Repositories.Interfaces;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
 // 1. Cau hinh DataContext voi chuoi ket noi dong
 builder.Services.AddDbContext<DataContext>(options =>
@@ -20,9 +26,41 @@ builder.Services.Configure<WEBPC_API.Helpers.CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));
 // 1. Cấu hình MailSettings lấy từ appsettings.json
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        // Hỗ trợ nhiều đường dẫn (Local + Render)
+        ValidIssuers = new[]
+        {
+            jwtSettings["Issuer"],
+            "https://webapi-1-qldr.onrender.com/",
+            "https://localhost:5000/"
+        },
+        ValidAudiences = new[]
+        {
+            jwtSettings["Audience"],
+            "https://webapi-1-qldr.onrender.com/",
+            "https://webpc-nhanvien.onrender.com/"
+        },
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+
 // Đăng ký HttpClient cho Helper
 builder.Services.AddHttpClient<WEBPC_API.Helpers.LocationHelper>();
-
 // 2. Đăng ký FileUploadHelper
 builder.Services.AddScoped<FileUploadHelper>();
 // 3. Đăng ký Repository
@@ -88,7 +126,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowWebApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5152") // URL cua du an WEBPC_WEB (MVC)
+            policy.WithOrigins("http://localhost:5152","http://localhost:5152") // URL cua du an WEBPC_WEB (MVC)
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -108,6 +146,8 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowWebApp"); // Ap dung CORS
 
+// --- 5. KÍCH HOẠT AUTHENTICATION (Thứ tự quan trọng!) ---
+app.UseAuthentication();
 app.UseAuthorization(); // (Them UseAuthentication() neu dung)
 
 app.MapControllers();

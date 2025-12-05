@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8w0hpUoUmwg=",
+  "dgSpecHash": "iZ/bCFzecpI=",
   "success": true,
   "projectFilePath": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\WEBPC_API.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,7 @@
     "C:\\Users\\TUFadmin\\.nuget\\packages\\cloudinarydotnet\\1.27.9\\cloudinarydotnet.1.27.9.nupkg.sha512",
     "C:\\Users\\TUFadmin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\TUFadmin\\.nuget\\packages\\mailkit\\4.14.1\\mailkit.4.14.1.nupkg.sha512",
+    "C:\\Users\\TUFadmin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.10\\microsoft.aspnetcore.authentication.jwtbearer.8.0.10.nupkg.sha512",
     "C:\\Users\\TUFadmin\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "C:\\Users\\TUFadmin\\.nuget\\packages\\microsoft.bcl.cryptography\\8.0.0\\microsoft.bcl.cryptography.8.0.0.nupkg.sha512",
     "C:\\Users\\TUFadmin\\.nuget\\packages\\microsoft.build.framework\\17.8.3\\microsoft.build.framework.17.8.3.nupkg.sha512",

@@ -1,31 +1,35 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
-# For more information, please see https://aka.ms/containercompat
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809 AS base
+﻿# 1. Dùng Image Linux (Sửa lỗi nanoserver của Windows)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
+# 2. Build Image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["WEBPC_API/WEBPC_API.csproj", "WEBPC_API/"]
-RUN dotnet restore "./WEBPC_API/WEBPC_API.csproj"
-COPY . .
-WORKDIR "/src/WEBPC_API"
-RUN dotnet build "./WEBPC_API.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# --- QUAN TRỌNG: Copy giữ nguyên cấu trúc thư mục ---
+# Vì Root Directory để trống, ta đang đứng ở ngoài cùng
+# Nên cần copy từ folder WEBPC_API vào trong Image
+COPY ["WEBPC_API/WEBPC_API.csproj", "WEBPC_API/"]
+
+# Restore các thư viện
+RUN dotnet restore "WEBPC_API/WEBPC_API.csproj"
+
+# Copy toàn bộ code vào
+COPY . .
+
+# Chuyển hướng vào thư mục chứa code chính để Build
+WORKDIR "/src/WEBPC_API"
+RUN dotnet build "WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# 3. Publish
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WEBPC_API.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WEBPC_API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# 4. Final
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

@@ -1,13 +1,22 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using WEBPC_API.Models.Entities;
+using WEBPC_API.Data;
 using WEBPC_API.Models.DTOs.Requests;
 using WEBPC_API.Models.DTOs.Responses;
+using WEBPC_API.Models.Entities; // Đảm bảo namespace này đúng với dự án của bạn
 using WEBPC_API.Repositories.Interfaces;
 using WEBPC_API.Services.Interfaces;
 using BC = BCrypt.Net.BCrypt; // Đặt biệt danh là "BC" để tránh nhầm lẫn
+
+
 
 namespace WEBPC_API.Services.Business
 {
@@ -17,17 +26,24 @@ namespace WEBPC_API.Services.Business
         private readonly ITaiKhoanRepository _tkRepo;
         private readonly IVaiTroRepository _vtRepo;
         private readonly IKhachHangRepository _khRepo;
+        private readonly DataContext _context;
+        private readonly IConfiguration _configuration; // Biến mới để đọc file appsettings
 
+        // Cập nhật Constructor để nhận thêm IConfiguration
         public UserService(
             INhanVienRepository nvRepo,
             ITaiKhoanRepository tkRepo,
             IVaiTroRepository vtRepo,
-            IKhachHangRepository khRepo)
+            IKhachHangRepository khRepo,
+            DataContext context,               // <--- Thêm cái này
+            IConfiguration configuration)      // <--- Thêm cái này
         {
             _nvRepo = nvRepo;
             _tkRepo = tkRepo;
             _vtRepo = vtRepo;
             _khRepo = khRepo;
+            _context = context;               // <--- Gán giá trị để không bị Null
+            _configuration = configuration;   // <--- Gán giá trị để không bị Null
         }
 
         // ==========================================================
@@ -291,6 +307,81 @@ namespace WEBPC_API.Services.Business
 
             await _tkRepo.UpdateAsync(tk);
             return true;
+        }
+
+        public async Task<LoginResponse?> Login(LoginRequest request)
+        {
+            // 1. Tìm tài khoản
+            var user = await _context.TaiKhoans
+                .Include(t => t.NhanVien)
+                    .ThenInclude(nv => nv.VaiTro)
+                .FirstOrDefaultAsync(x => x.TenDangNhap == request.TenDangNhap);
+
+            if (user == null) return null;
+
+            // 2. Kiểm tra mật khẩu (Hỗ trợ cả Hash và Text thường)
+            bool isPasswordValid = false;
+            if (!string.IsNullOrEmpty(user.MatKhauHash))
+            {
+                // Ưu tiên 1: Check Hash (BCrypt)
+                if (user.MatKhauHash.StartsWith("$2"))
+                {
+                    try { isPasswordValid = BC.Verify(request.MatKhau, user.MatKhauHash); } catch { }
+                }
+
+                // Ưu tiên 2: Check Text thường (Fallback - có Trim khoảng trắng)
+                if (!isPasswordValid && user.MatKhauHash.Trim() == request.MatKhau.Trim())
+                {
+                    isPasswordValid = true;
+                }
+            }
+
+            if (!isPasswordValid) return null;
+
+            // 3. Lấy thông tin hiển thị
+            string hoTen = user.NhanVien?.HoTen ?? "Admin/User";
+            int maNhanVien = user.NhanVien?.MaNhanVien ?? 0;
+            int maVaiTro = user.NhanVien?.VaiTro?.MaVaiTro ?? 0;
+            string tenVaiTro = user.NhanVien?.VaiTro?.TenVaiTro ?? "Unknown";
+
+            // 4. Tạo Token
+            string token = GenerateJwtToken(user, maNhanVien, tenVaiTro);
+
+            return new LoginResponse
+            {
+                MaNhanVien = maNhanVien,
+                HoTen = hoTen,
+                TenDangNhap = user.TenDangNhap,
+                MaVaiTro = maVaiTro,
+                TenVaiTro = tenVaiTro,
+                Token = token
+            };
+        }
+
+        private string GenerateJwtToken(TaiKhoan user, int maNhanVien, string roleName)
+        {
+            var jwtSettings = _configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+            var claims = new List<Claim>
+            {
+                new Claim("MaTaiKhoan", user.MaTaiKhoan.ToString()),
+                new Claim("MaNhanVien", maNhanVien.ToString()),
+                new Claim(ClaimTypes.Name, user.TenDangNhap),
+                new Claim(ClaimTypes.Role, roleName)
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(24),
+                Issuer = jwtSettings["Issuer"],
+                Audience = jwtSettings["Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
     }
 }

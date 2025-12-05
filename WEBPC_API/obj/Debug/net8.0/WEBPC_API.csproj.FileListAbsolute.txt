@@ -360,3 +360,5 @@ F:\23115053122114_K23_PhanVanKhanh\College_Year03\125\practise_TLWNC\WEBNC\PROJE
 F:\23115053122114_K23_PhanVanKhanh\College_Year03\125\practise_TLWNC\WEBNC\PROJECT\WEBPC_API\WEBPC_API\bin\Debug\net8.0\MailKit.dll
 F:\23115053122114_K23_PhanVanKhanh\College_Year03\125\practise_TLWNC\WEBNC\PROJECT\WEBPC_API\WEBPC_API\bin\Debug\net8.0\MimeKit.dll
 F:\23115053122114_K23_PhanVanKhanh\College_Year03\125\practise_TLWNC\WEBNC\PROJECT\WEBPC_API\WEBPC_API\bin\Debug\net8.0\BCrypt.Net-Next.dll
+F:\23115053122114_K23_PhanVanKhanh\College_Year03\125\practise_TLWNC\WEBNC\PROJECT\WEBPC_API\WEBPC_API\obj\Debug\net8.0\WEBPC_API.sourcelink.json
+F:\23115053122114_K23_PhanVanKhanh\College_Year03\125\practise_TLWNC\WEBNC\PROJECT\WEBPC_API\WEBPC_API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

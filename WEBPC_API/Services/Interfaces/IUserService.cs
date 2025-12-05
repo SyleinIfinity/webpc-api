@@ -7,28 +7,29 @@ namespace WEBPC_API.Services.Interfaces
 {
     public interface IUserService
     {
-        // --- QUẢN LÝ VAI TRÒ ---
+        // --- CÁC HÀM CŨ (GIỮ NGUYÊN) ---
+        // 1. Quản lý Vai trò
         Task<List<VaiTroResponse>> GetAllVaiTros();
         Task<bool> CreateVaiTro(VaiTroRequest req);
         Task<bool> DeleteVaiTro(int id);
 
-        // --- QUẢN LÝ NHÂN VIÊN ---
+        // 2. Quản lý Nhân viên
         Task<List<NhanVienResponse>> GetAllNhanViens();
         Task<NhanVienResponse?> GetNhanVienById(int id);
-
-        // Trả về Tuple (Thành công/Thất bại, Thông báo lỗi/thành công)
         Task<(bool IsSuccess, string Message)> CreateNhanVien(NhanVienRequest req);
-
         Task<bool> UpdateNhanVien(int id, NhanVienRequest req);
         Task<bool> DeleteNhanVien(int id);
 
-        // --- QUẢN LÝ KHÁCH HÀNG ---
+        // 3. Quản lý Khách hàng
         Task<List<KhachHangResponse>> GetAllKhachHangs();
         Task<(bool IsSuccess, string Message)> CreateKhachHang(KhachHangRequest req);
         Task<bool> UpdateKhachHang(int id, UpdateKhachHangRequest req);
 
-        // --- QUẢN LÝ TÀI KHOẢN ---
+        // 4. Quản lý Tài khoản (Cũ)
         Task<List<TaiKhoanResponse>> GetAllTaiKhoans();
         Task<bool> ChangePassword(int id, string newPass);
+
+        // --- BỔ SUNG HÀM ĐĂNG NHẬP Ở ĐÂY ---
+        Task<LoginResponse?> Login(LoginRequest request);
     }
 }
