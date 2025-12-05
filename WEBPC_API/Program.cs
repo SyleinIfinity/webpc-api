@@ -58,11 +58,18 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.Configure<VietQrSettings>(builder.Configuration.GetSection("VietQrSettings"));
+builder.Services.Configure<CassoSettings>(builder.Configuration.GetSection("CassoSettings"));
+
 
 // Đăng ký HttpClient cho Helper
 builder.Services.AddHttpClient<WEBPC_API.Helpers.LocationHelper>();
 // 2. Đăng ký FileUploadHelper
 builder.Services.AddScoped<FileUploadHelper>();
+// 2. Đăng ký HttpClient cho VietQrHelper
+builder.Services.AddHttpClient<VietQrHelper>();
+// 2. Đăng ký dịch vụ Mail
+builder.Services.AddScoped<IMailService, MailService>();
 // 3. Đăng ký Repository
 builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
 // 4. Đăng ký Service
@@ -75,8 +82,6 @@ builder.Services.AddScoped<IHinhAnhSanPhamService, HinhAnhSanPhamService>();
 builder.Services.AddScoped<IDanhMucRepository, DanhMucRepository>();
 // Đăng ký Service
 builder.Services.AddScoped<IDanhMucService, DanhMucService>();
-// 2. Đăng ký dịch vụ Mail
-builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 builder.Services.AddScoped<IOtpService, OtpService>();
 // Repositories
@@ -110,6 +115,14 @@ builder.Services.AddScoped<IPhieuNhapService, PhieuNhapService>();
 builder.Services.AddScoped<IGioHangRepository, GioHangRepository>();
 // Đăng ký Service
 builder.Services.AddScoped<IGioHangService, GioHangService>();
+// 3. Đăng ký Service Payment
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+// Đăng ký Repository Đơn Hàng
+builder.Services.AddScoped<IDonHangRepository, DonHangRepository>();
+// Đăng ký Service Admin Order
+builder.Services.AddScoped<IOrderAdminService, OrderAdminService>();
+builder.Services.AddScoped<INhatKyHoatDongRepository, NhatKyHoatDongRepository>();
 
 
 
@@ -118,7 +131,36 @@ builder.Services.AddScoped<IGioHangService, GioHangService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "WEBPC API", Version = "v1" });
+
+    // Cấu hình để Swagger biết ta dùng Bearer Token (JWT)
+    option.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Vui lòng nhập token vào đây (Chỉ cần paste chuỗi Token, không cần chữ Bearer)",
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    option.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 // 4. Cau hinh CORS (Cho phep WEBPC_WEB goi)
 builder.Services.AddCors(options =>

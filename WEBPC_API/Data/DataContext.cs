@@ -26,6 +26,10 @@ namespace WEBPC_API.Data
         public DbSet<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
         public DbSet<GioHang> GioHangs { get; set; }
         public DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
+        public DbSet<DonHang> DonHang { get; set; }
+        public DbSet<ChiTietDonHang> ChiTietDonHang { get; set; }
+        public DbSet<GiaoDichThanhToan> GiaoDichThanhToan { get; set; }
+        public DbSet<NhatKyHoatDong> NhatKyHoatDong { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -201,6 +205,112 @@ namespace WEBPC_API.Data
                       .WithMany()
                       .HasForeignKey(e => e.MaSanPham)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // 1. CẤU HÌNH ĐƠN HÀNG (DonHang)
+            // =======================================================
+            modelBuilder.Entity<DonHang>(entity =>
+            {
+                entity.ToTable("DonHang");
+                entity.HasKey(e => e.maDonHang);
+
+                // Ràng buộc Unique cho Mã Code Đơn Hàng
+                entity.HasIndex(e => e.maCodeDonHang).IsUnique();
+
+                // Cấu hình các cột
+                entity.Property(e => e.maCodeDonHang).IsRequired().HasMaxLength(50).IsUnicode(false);
+                entity.Property(e => e.ngayDat).HasDefaultValueSql("GETDATE()"); // Tự động lấy ngày giờ hiện tại
+                entity.Property(e => e.tongTien).HasColumnType("decimal(18, 0)"); // Định dạng tiền tệ chuẩn SQL
+                entity.Property(e => e.trangThai).HasMaxLength(50).HasDefaultValue("ChoXacNhan");
+                entity.Property(e => e.diaChiGiaoHang).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.soDienThoaiGiao).IsRequired().HasMaxLength(15).IsUnicode(false);
+                entity.Property(e => e.nguoiNhan).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.phiVanChuyen).HasColumnType("decimal(18, 0)").HasDefaultValue(0);
+
+                // Quan hệ: KhachHang (1) -> DonHang (N)
+                entity.HasOne(d => d.KhachHang)
+                      .WithMany() // Giả sử KhachHang không cần list DonHangs
+                      .HasForeignKey(d => d.maKhachHang)
+                      .OnDelete(DeleteBehavior.Restrict); // Không xóa Khách Hàng nếu đã có đơn
+
+                // Quan hệ: NhanVien (1) -> DonHang (N) (Có thể null)
+                entity.HasOne(d => d.NhanVien)
+                      .WithMany()
+                      .HasForeignKey(d => d.maNhanVienDuyet)
+                      .OnDelete(DeleteBehavior.SetNull); // Nếu nhân viên bị xóa, đơn hàng vẫn còn (maNhanVienDuyet = null)
+            });
+
+            // =======================================================
+            // 2. CẤU HÌNH CHI TIẾT ĐƠN HÀNG (ChiTietDonHang)
+            // =======================================================
+            modelBuilder.Entity<ChiTietDonHang>(entity =>
+            {
+                entity.ToTable("ChiTietDonHang");
+                entity.HasKey(e => e.maChiTietDonHang);
+
+                // Cấu hình tiền tệ
+                entity.Property(e => e.donGiaLucMua).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.thanhTien).HasColumnType("decimal(18, 0)");
+
+                // Quan hệ: DonHang (1) -> ChiTietDonHang (N)
+                // QUAN TRỌNG: ON DELETE CASCADE (Xóa Đơn hàng -> Xóa luôn Chi tiết)
+                entity.HasOne(d => d.DonHang)
+                      .WithMany(p => p.ChiTietDonHangs)
+                      .HasForeignKey(d => d.maDonHang)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Quan hệ: SanPham (1) -> ChiTietDonHang (N)
+                entity.HasOne(d => d.SanPham)
+                      .WithMany()
+                      .HasForeignKey(d => d.maSanPham)
+                      .OnDelete(DeleteBehavior.Restrict); // Không cho phép xóa Sản phẩm nếu đã có trong đơn hàng
+            });
+
+            // =======================================================
+            // 3. CẤU HÌNH GIAO DỊCH THANH TOÁN (GiaoDichThanhToan)
+            // =======================================================
+            modelBuilder.Entity<GiaoDichThanhToan>(entity =>
+            {
+                entity.ToTable("GiaoDichThanhToan");
+                entity.HasKey(e => e.maGiaoDich);
+
+                // Cấu hình cột
+                entity.Property(e => e.maGiaoDichMomo).HasMaxLength(100).IsUnicode(false);
+                entity.Property(e => e.phuongThuc).IsRequired().HasMaxLength(20).IsUnicode(false);
+                entity.Property(e => e.soTien).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.trangThai).HasMaxLength(50).HasDefaultValue("Pending");
+                entity.Property(e => e.noiDungLoi).HasMaxLength(255);
+                entity.Property(e => e.ngayTao).HasDefaultValueSql("GETDATE()");
+
+                // Quan hệ: DonHang (1) -> GiaoDichThanhToan (N)
+                // Một đơn hàng có thể có nhiều lần thanh toán (VD: thanh toán lỗi -> thanh toán lại)
+                entity.HasOne(d => d.DonHang)
+                      .WithMany()
+                      .HasForeignKey(d => d.maDonHang)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa đơn hàng -> Xóa lịch sử giao dịch
+            });
+
+            // =======================================================
+            // 4. CẤU HÌNH NHẬT KÝ HOẠT ĐỘNG (Audit Log) - MỚI
+            // =======================================================
+            modelBuilder.Entity<NhatKyHoatDong>(entity =>
+            {
+                entity.ToTable("NhatKyHoatDong"); // Map đúng tên bảng trong SQL
+                entity.HasKey(e => e.Id);
+
+                // Cấu hình các cột
+                entity.Property(e => e.HanhDong).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.MoTa).IsRequired(); // NVARCHAR(MAX) mặc định
+                entity.Property(e => e.ThoiGian).HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.IPThucHien).HasMaxLength(50);
+
+                // Quan hệ: NhanVien (1) -> NhatKy (N)
+                // Cho phép MaNhanVien là NULL (nếu System tự làm hoặc nhân viên bị xóa)
+                entity.HasOne(e => e.NhanVien)
+                      .WithMany() // Giả sử bên NhanVien chưa cần list log
+                      .HasForeignKey(e => e.MaNhanVien)
+                      .OnDelete(DeleteBehavior.SetNull);
+                // QUAN TRỌNG: Nếu xóa nhân viên, log vẫn còn nhưng MaNhanVien = NULL
             });
         }
     }

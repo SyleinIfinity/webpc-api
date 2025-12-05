@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WEBPC_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5685c552a0acd6568a73a16a1d7b9f15ca15028")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7280e95ab3ac7d4c6d4b016133b4c7177b1d8892")]
 [assembly: System.Reflection.AssemblyProductAttribute("WEBPC_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WEBPC_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

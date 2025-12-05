@@ -3,56 +3,68 @@
   "WorkspaceRootPath": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\entities\\donhang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\entities\\donhang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\controllers\\donhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\controllers\\donhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\services\\business\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\services\\business\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\repositories\\implements\\donhangrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\repositories\\implements\\donhangrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\controllers\\taikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\controllers\\taikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\entities\\taikhoan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\entities\\taikhoan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\repositories\\interfaces\\itaikhoanrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\repositories\\interfaces\\itaikhoanrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\dtos\\responses\\loginresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\dtos\\responses\\loginresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\dtos\\requests\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\dtos\\requests\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\controllers\\hinhanhsanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\controllers\\hinhanhsanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\controllers\\khachhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\controllers\\khachhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\controllers\\khuyenmaicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\controllers\\khuyenmaicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\repositories\\interfaces\\idonhangrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\repositories\\interfaces\\idonhangrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\services\\business\\orderadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\services\\business\\orderadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\helpers\\mailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\helpers\\mailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\repositories\\implements\\nhatkyhoatdongrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\repositories\\implements\\nhatkyhoatdongrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\repositories\\interfaces\\inhatkyhoatdongrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\repositories\\interfaces\\inhatkyhoatdongrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\entities\\nhatkyhoatdong.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\entities\\nhatkyhoatdong.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Migrations\\20251205092743_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:WEBPC_API\\Migrations\\20251205092743_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\services\\business\\paymentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\services\\business\\paymentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\services\\interfaces\\iorderadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\services\\interfaces\\iorderadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\controllers\\orderadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\controllers\\orderadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\dtos\\responses\\orderprocessresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\dtos\\responses\\orderprocessresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -67,160 +79,210 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DonHang.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\DonHang.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Models\\Entities\\DonHang.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\DonHang.cs",
-              "RelativeToolTip": "WEBPC_API\\Models\\Entities\\DonHang.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "DonHangController.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\DonHangController.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\DonHangController.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\DonHangController.cs",
+              "RelativeToolTip": "WEBPC_API\\Controllers\\DonHangController.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAA1wEMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T03:47:38.469Z",
+              "WhenOpened": "2025-12-05T10:32:05.731Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DonHangRepository.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Implements\\DonHangRepository.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Repositories\\Implements\\DonHangRepository.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Implements\\DonHangRepository.cs",
+              "RelativeToolTip": "WEBPC_API\\Repositories\\Implements\\DonHangRepository.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAgwDsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T10:31:44.824Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "TaiKhoanController.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\TaiKhoanController.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\TaiKhoanController.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\TaiKhoanController.cs",
-              "RelativeToolTip": "WEBPC_API\\Controllers\\TaiKhoanController.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAswEsAAAABAAAAAAAAAA==",
+              "Title": "IDonHangRepository.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\IDonHangRepository.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Repositories\\Interfaces\\IDonHangRepository.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\IDonHangRepository.cs",
+              "RelativeToolTip": "WEBPC_API\\Repositories\\Interfaces\\IDonHangRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:52:10.938Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TaiKhoan.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
-              "RelativeToolTip": "WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:39:34.582Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ITaiKhoanRepository.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
-              "RelativeToolTip": "WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:39:12.894Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\UserService.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Services\\Business\\UserService.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\UserService.cs",
-              "RelativeToolTip": "WEBPC_API\\Services\\Business\\UserService.cs",
-              "ViewState": "AgIAAF0BAAAAAAAAAAAqwIABAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:36:05.366Z",
+              "WhenOpened": "2025-12-05T10:31:28.661Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "IUserService.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Interfaces\\IUserService.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Services\\Interfaces\\IUserService.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Interfaces\\IUserService.cs",
-              "RelativeToolTip": "WEBPC_API\\Services\\Interfaces\\IUserService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:31:03.285Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "LoginResponse.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
-              "RelativeToolTip": "WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:30:28.058Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "LoginRequest.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
-              "RelativeToolTip": "WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:30:03.631Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "HinhAnhSanPhamController.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
-              "RelativeToolTip": "WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:29:07.442Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "KhachHangController.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\KhachHangController.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\KhachHangController.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\KhachHangController.cs",
-              "RelativeToolTip": "WEBPC_API\\Controllers\\KhachHangController.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAwwCoAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:28:56.177Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "KhuyenMaiController.cs",
-              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\KhuyenMaiController.cs",
-              "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\KhuyenMaiController.cs",
-              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\KhuyenMaiController.cs",
-              "RelativeToolTip": "WEBPC_API\\Controllers\\KhuyenMaiController.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwEAAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:28:44.29Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
               "Title": "appsettings.json",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\appsettings.json",
               "RelativeDocumentMoniker": "WEBPC_API\\appsettings.json",
               "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\appsettings.json",
               "RelativeToolTip": "WEBPC_API\\appsettings.json",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAACQAAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-05T00:18:11.972Z"
+              "WhenOpened": "2025-12-05T09:50:23.961Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 6,
+              "Title": "MailSettings.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Helpers\\MailSettings.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Helpers\\MailSettings.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Helpers\\MailSettings.cs",
+              "RelativeToolTip": "WEBPC_API\\Helpers\\MailSettings.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:46:05.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Program.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Program.cs",
               "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Program.cs",
               "RelativeToolTip": "WEBPC_API\\Program.cs",
-              "ViewState": "AgIAAHgAAAAAAAAAAAAgwIcAAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAgwKIAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:12:34.082Z"
+              "WhenOpened": "2025-12-05T09:37:02.187Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "NhatKyHoatDongRepository.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Implements\\NhatKyHoatDongRepository.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Repositories\\Implements\\NhatKyHoatDongRepository.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Implements\\NhatKyHoatDongRepository.cs",
+              "RelativeToolTip": "WEBPC_API\\Repositories\\Implements\\NhatKyHoatDongRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:36:46.202Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "INhatKyHoatDongRepository.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\INhatKyHoatDongRepository.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Repositories\\Interfaces\\INhatKyHoatDongRepository.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\INhatKyHoatDongRepository.cs",
+              "RelativeToolTip": "WEBPC_API\\Repositories\\Interfaces\\INhatKyHoatDongRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:36:29.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OrderAdminService.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\OrderAdminService.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Services\\Business\\OrderAdminService.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\OrderAdminService.cs",
+              "RelativeToolTip": "WEBPC_API\\Services\\Business\\OrderAdminService.cs",
+              "ViewState": "AgIAAKMAAAAAAAAAAAAiwLMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:06:15.938Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DataContext.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Data\\DataContext.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Data\\DataContext.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Data\\DataContext.cs",
+              "RelativeToolTip": "WEBPC_API\\Data\\DataContext.cs",
+              "ViewState": "AgIAAAgBAAAAAAAAAAAswDkBAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:25:43.833Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "20251205092743_InitialCreate.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Migrations\\20251205092743_InitialCreate.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Migrations\\20251205092743_InitialCreate.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Migrations\\20251205092743_InitialCreate.cs",
+              "RelativeToolTip": "WEBPC_API\\Migrations\\20251205092743_InitialCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:27:43.752Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "NhatKyHoatDong.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\NhatKyHoatDong.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Models\\Entities\\NhatKyHoatDong.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\NhatKyHoatDong.cs",
+              "RelativeToolTip": "WEBPC_API\\Models\\Entities\\NhatKyHoatDong.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:25:26.729Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "PaymentService.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\PaymentService.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Services\\Business\\PaymentService.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\PaymentService.cs",
+              "RelativeToolTip": "WEBPC_API\\Services\\Business\\PaymentService.cs",
+              "ViewState": "AgIAAFEAAAAAAAAAAAAgwIgAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:18:50.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "OrderAdminController.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\OrderAdminController.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\OrderAdminController.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\OrderAdminController.cs",
+              "RelativeToolTip": "WEBPC_API\\Controllers\\OrderAdminController.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAswCUAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:07:11.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "OrderProcessResponse.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Responses\\OrderProcessResponse.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Models\\DTOs\\Responses\\OrderProcessResponse.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Responses\\OrderProcessResponse.cs",
+              "RelativeToolTip": "WEBPC_API\\Models\\DTOs\\Responses\\OrderProcessResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:07:03.66Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IOrderAdminService.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Interfaces\\IOrderAdminService.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Services\\Interfaces\\IOrderAdminService.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Interfaces\\IOrderAdminService.cs",
+              "RelativeToolTip": "WEBPC_API\\Services\\Interfaces\\IOrderAdminService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T09:06:13.747Z",
+              "EditorCaption": ""
             }
           ]
         }

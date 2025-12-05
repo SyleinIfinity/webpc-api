@@ -1,5 +1,42 @@
 [
   {
+    "ContainingType": "WEBPC_API.Controllers.OrderAdminController",
+    "Method": "ConfirmRefund",
+    "RelativePath": "api/admin/orders/refund-confirm/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.OrderAdminController",
+    "Method": "RejectOrder",
+    "RelativePath": "api/admin/orders/reject/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WEBPC_API.Models.DTOs.Requests.RejectOrderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WEBPC_API.Controllers.DanhMucController",
     "Method": "GetAll",
     "RelativePath": "api/DanhMuc",
@@ -67,6 +104,48 @@
     "Method": "Delete",
     "RelativePath": "api/DanhMuc/{id}",
     "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.DonHangController",
+    "Method": "GetAllOrders",
+    "RelativePath": "api/DonHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.DonHangController",
+    "Method": "CreateOrderTest",
+    "RelativePath": "api/DonHang",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WEBPC_API.Controllers.TaoDonHangRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.DonHangController",
+    "Method": "GetOrderById",
+    "RelativePath": "api/DonHang/{id}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -496,6 +575,38 @@
       {
         "Name": "request",
         "Type": "WEBPC_API.Models.DTOs.Requests.VerifyOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.PaymentController",
+    "Method": "GetPaymentQr",
+    "RelativePath": "api/Payment/get-qr/{maDonHang}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maDonHang",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.PaymentController",
+    "Method": "HandleCassoWebhook",
+    "RelativePath": "api/Payment/webhook-casso",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "WEBPC_API.Models.DTOs.Casso.CassoWebhookData",
         "IsRequired": true
       }
     ],
