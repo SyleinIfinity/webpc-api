@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\models\\entities\\donhang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\models\\entities\\donhang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|f:\\23115053122114_k23_phanvankhanh\\college_year03\\125\\practise_tlwnc\\webnc\\project\\webpc_api\\webpc_api\\services\\business\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{930843FF-DC77-483E-A23B-975EE1B1D9AB}|WEBPC_API\\WEBPC_API.csproj|solutionrelative:webpc_api\\services\\business\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -58,11 +62,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "DonHang.cs",
+              "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\DonHang.cs",
+              "RelativeDocumentMoniker": "WEBPC_API\\Models\\Entities\\DonHang.cs",
+              "ToolTip": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\DonHang.cs",
+              "RelativeToolTip": "WEBPC_API\\Models\\Entities\\DonHang.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T03:47:38.469Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "TaiKhoanController.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\TaiKhoanController.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\TaiKhoanController.cs",
@@ -70,12 +87,11 @@
               "RelativeToolTip": "WEBPC_API\\Controllers\\TaiKhoanController.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAswEsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:52:10.938Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:52:10.938Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "TaiKhoan.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
@@ -83,12 +99,11 @@
               "RelativeToolTip": "WEBPC_API\\Models\\Entities\\TaiKhoan.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:39:34.582Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:39:34.582Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ITaiKhoanRepository.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
@@ -96,12 +111,11 @@
               "RelativeToolTip": "WEBPC_API\\Repositories\\Interfaces\\ITaiKhoanRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:39:12.894Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:39:12.894Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "UserService.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Business\\UserService.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Services\\Business\\UserService.cs",
@@ -114,7 +128,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "IUserService.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Services\\Interfaces\\IUserService.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Services\\Interfaces\\IUserService.cs",
@@ -122,12 +136,11 @@
               "RelativeToolTip": "WEBPC_API\\Services\\Interfaces\\IUserService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:31:03.285Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:31:03.285Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "LoginResponse.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
@@ -135,12 +148,11 @@
               "RelativeToolTip": "WEBPC_API\\Models\\DTOs\\Responses\\LoginResponse.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:30:28.058Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:30:28.058Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "LoginRequest.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
@@ -148,12 +160,11 @@
               "RelativeToolTip": "WEBPC_API\\Models\\DTOs\\Requests\\LoginRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:30:03.631Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:30:03.631Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "HinhAnhSanPhamController.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
@@ -161,12 +172,11 @@
               "RelativeToolTip": "WEBPC_API\\Controllers\\HinhAnhSanPhamController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:29:07.442Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:29:07.442Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "KhachHangController.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\KhachHangController.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\KhachHangController.cs",
@@ -174,12 +184,11 @@
               "RelativeToolTip": "WEBPC_API\\Controllers\\KhachHangController.cs",
               "ViewState": "AgIAACYAAAAAAAAAAAAwwCoAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:28:56.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:28:56.177Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "KhuyenMaiController.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Controllers\\KhuyenMaiController.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Controllers\\KhuyenMaiController.cs",
@@ -187,12 +196,11 @@
               "RelativeToolTip": "WEBPC_API\\Controllers\\KhuyenMaiController.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAQwEAAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:28:44.29Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:28:44.29Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "appsettings.json",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\appsettings.json",
               "RelativeDocumentMoniker": "WEBPC_API\\appsettings.json",
@@ -200,12 +208,11 @@
               "RelativeToolTip": "WEBPC_API\\appsettings.json",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAACQAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-05T00:18:11.972Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:18:11.972Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "Program.cs",
               "DocumentMoniker": "F:\\23115053122114_K23_PhanVanKhanh\\College_Year03\\125\\practise_TLWNC\\WEBNC\\PROJECT\\WEBPC_API\\WEBPC_API\\Program.cs",
               "RelativeDocumentMoniker": "WEBPC_API\\Program.cs",
@@ -213,8 +220,7 @@
               "RelativeToolTip": "WEBPC_API\\Program.cs",
               "ViewState": "AgIAAHgAAAAAAAAAAAAgwIcAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-05T00:12:34.082Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-05T00:12:34.082Z"
             }
           ]
         }
