@@ -37,5 +37,11 @@ namespace WEBPC_API.Models.Repositories
             _context.HinhAnhSanPhams.Remove(hinhAnh);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(HinhAnhSanPham image)
+        {
+            _context.HinhAnhSanPhams.Update(image);
+            await _context.SaveChangesAsync();
+        }
     }
 }

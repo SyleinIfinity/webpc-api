@@ -184,7 +184,8 @@ namespace WEBPC_API.Services.Business
                 {
                     Id = h.Id,
                     Url = h.UrlHinhAnh,
-                    PublicId = h.PublicId
+                    PublicId = h.PublicId,
+                    LaAnhDaiDien = h.LaAnhDaiDien
                 }).ToList() ?? new List<ImageResponse>()
             };
         }

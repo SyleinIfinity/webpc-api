@@ -13,5 +13,7 @@ namespace WEBPC_API.Services.Interfaces
         Task<bool> DeleteImageAsync(int imageId);
 
         Task<bool> DeleteAllImagesByProductIdAsync(int productId);
+
+        Task<bool> SetMainImageAsync(int productId, int imageId);
     }
 }

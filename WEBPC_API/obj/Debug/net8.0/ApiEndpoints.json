@@ -328,6 +328,27 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WEBPC_API.Controllers.HinhAnhSanPhamController",
+    "Method": "SetMainImage",
+    "RelativePath": "api/HinhAnhSanPham/product/{productId}/set-main/{imageId}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "imageId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WEBPC_API.Controllers.KhachHangController",
     "Method": "GetAll",
     "RelativePath": "api/KhachHang",

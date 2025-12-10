@@ -419,6 +419,38 @@
         }
       }
     },
+    "/api/HinhAnhSanPham/product/{productId}/set-main/{imageId}": {
+      "patch": {
+        "tags": [
+          "HinhAnhSanPham"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/HinhAnhSanPham/{id}": {
       "delete": {
         "tags": [

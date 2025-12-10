@@ -8,5 +8,6 @@ namespace WEBPC_API.Models.Interfaces
         Task<IEnumerable<HinhAnhSanPham>> GetByProductIdAsync(int productId);
         Task AddAsync(HinhAnhSanPham hinhAnh);
         Task DeleteAsync(HinhAnhSanPham hinhAnh);
+        Task UpdateAsync(HinhAnhSanPham image);
     }
 }

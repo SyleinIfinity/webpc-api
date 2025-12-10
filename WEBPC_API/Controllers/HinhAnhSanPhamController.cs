@@ -42,6 +42,33 @@ namespace WEBPC_API.Controllers
             }
         }
 
+        // ==========================================================
+        // API ĐẶT ẢNH ĐẠI DIỆN (TRUY THEO SẢN PHẨM)
+        // URL: PATCH api/HinhAnhSanPham/product/{productId}/set-main/{imageId}
+        // Ví dụ: api/HinhAnhSanPham/product/15/set-main/32
+        // ==========================================================
+        [HttpPatch("product/{productId}/set-main/{imageId}")]
+        public async Task<IActionResult> SetMainImage(int productId, int imageId)
+        {
+            try
+            {
+                // Gọi Service với đầy đủ 2 tham số
+                var result = await _service.SetMainImageAsync(productId, imageId);
+
+                if (result)
+                {
+                    return Ok(new { message = "Đã đặt làm ảnh đại diện thành công." });
+                }
+
+                return BadRequest(new { message = "Không thể đặt ảnh đại diện." });
+            }
+            catch (Exception ex)
+            {
+                // Trả về lỗi 400 kèm message (ví dụ: Ảnh không thuộc sản phẩm)
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // DELETE: api/HinhAnhSanPham/10
         // Xóa bức ảnh có ID = 10 (Xóa cả trên Cloud lẫn DB)
         [HttpDelete("{id}")]
@@ -51,6 +78,7 @@ namespace WEBPC_API.Controllers
             if (!result) return NotFound("Không tìm thấy hình ảnh");
             return Ok("Đã xóa hình ảnh thành công");
         }
+
 
         // ==========================================================
         // API XÓA TẤT CẢ ẢNH CỦA SẢN PHẨM

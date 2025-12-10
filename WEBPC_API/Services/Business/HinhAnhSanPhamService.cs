@@ -29,7 +29,8 @@ namespace WEBPC_API.Services.Business
             {
                 Id = i.Id,
                 Url = i.UrlHinhAnh,
-                PublicId = i.PublicId
+                PublicId = i.PublicId,
+                LaAnhDaiDien = i.LaAnhDaiDien // ✅ Bổ sung dòng này
             }).ToList();
         }
 
@@ -106,6 +107,40 @@ namespace WEBPC_API.Services.Business
                 // Lưu ý: Nếu Repository của bạn chưa có hàm xóa nhiều (DeleteRange), 
                 // ta gọi DeleteAsync từng cái. Với số lượng ảnh ít (<20) thì vẫn ổn.
                 await _imageRepo.DeleteAsync(img);
+            }
+
+            return true;
+        }
+
+        // --- [CẬP NHẬT] SET ẢNH ĐẠI DIỆN THEO SẢN PHẨM ---
+        public async Task<bool> SetMainImageAsync(int productId, int imageId)
+        {
+            // 1. Lấy tất cả ảnh của sản phẩm
+            var allImages = await _imageRepo.GetByProductIdAsync(productId);
+            var imageList = allImages.ToList(); // Chuyển về List để dễ xử lý
+
+            // Kiểm tra ảnh đích có tồn tại trong danh sách này không
+            var targetImage = imageList.FirstOrDefault(x => x.Id == imageId);
+            if (targetImage == null)
+            {
+                throw new Exception($"Hình ảnh ID {imageId} không thuộc về sản phẩm ID {productId}.");
+            }
+
+            // 2. Tìm ảnh đang là ảnh đại diện cũ (nếu có) để bỏ đi
+            // Chỉ cần update những ảnh đang là true thành false
+            var oldMainImages = imageList.Where(x => x.LaAnhDaiDien && x.Id != imageId).ToList();
+
+            foreach (var img in oldMainImages)
+            {
+                img.LaAnhDaiDien = false;
+                await _imageRepo.UpdateAsync(img);
+            }
+
+            // 3. Set ảnh mới làm đại diện (nếu nó chưa phải là đại diện)
+            if (!targetImage.LaAnhDaiDien)
+            {
+                targetImage.LaAnhDaiDien = true;
+                await _imageRepo.UpdateAsync(targetImage);
             }
 
             return true;
