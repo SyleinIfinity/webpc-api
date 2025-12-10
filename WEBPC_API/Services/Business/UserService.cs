@@ -315,45 +315,63 @@ namespace WEBPC_API.Services.Business
 
         public async Task<LoginResponse?> Login(LoginRequest request)
         {
-            // 1. Tìm tài khoản
+            // 1. Tìm tài khoản VÀ Include cả NhanVien lẫn KhachHang
             var user = await _context.TaiKhoans
                 .Include(t => t.NhanVien)
                     .ThenInclude(nv => nv.VaiTro)
+                .Include(t => t.KhachHang) // <--- QUAN TRỌNG: Phải Include thêm dòng này
                 .FirstOrDefaultAsync(x => x.TenDangNhap == request.TenDangNhap);
 
             if (user == null) return null;
 
-            // 2. Kiểm tra mật khẩu (Hỗ trợ cả Hash và Text thường)
+            // 2. Kiểm tra mật khẩu (Giữ nguyên logic cũ của bạn)
             bool isPasswordValid = false;
             if (!string.IsNullOrEmpty(user.MatKhauHash))
             {
-                // Ưu tiên 1: Check Hash (BCrypt)
                 if (user.MatKhauHash.StartsWith("$2"))
                 {
                     try { isPasswordValid = BC.Verify(request.MatKhau, user.MatKhauHash); } catch { }
                 }
-
-                // Ưu tiên 2: Check Text thường (Fallback - có Trim khoảng trắng)
                 if (!isPasswordValid && user.MatKhauHash.Trim() == request.MatKhau.Trim())
                 {
                     isPasswordValid = true;
                 }
             }
-
             if (!isPasswordValid) return null;
 
-            // 3. Lấy thông tin hiển thị
-            string hoTen = user.NhanVien?.HoTen ?? "Admin/User";
-            int maNhanVien = user.NhanVien?.MaNhanVien ?? 0;
-            int maVaiTro = user.NhanVien?.VaiTro?.MaVaiTro ?? 0;
-            string tenVaiTro = user.NhanVien?.VaiTro?.TenVaiTro ?? "Unknown";
+            // 3. Xử lý thông tin hiển thị (PHẦN SỬA ĐỔI)
+            int? maNhanVien = null;
+            int? maKhachHang = null;
+            string hoTen = "Unknown";
+            string tenVaiTro = "Unknown";
+            int maVaiTro = 0;
 
-            // 4. Tạo Token
-            string token = GenerateJwtToken(user, maNhanVien, tenVaiTro);
+            // Kiểm tra xem Tài khoản này liên kết với Nhân Viên hay Khách Hàng
+            if (user.NhanVien != null)
+            {
+                // === LÀ NHÂN VIÊN ===
+                maNhanVien = user.NhanVien.MaNhanVien;
+                hoTen = user.NhanVien.HoTen;
+                maVaiTro = user.NhanVien.VaiTro?.MaVaiTro ?? 0;
+                tenVaiTro = user.NhanVien.VaiTro?.TenVaiTro ?? "NhanVien";
+            }
+            else if (user.KhachHang != null)
+            {
+                // === LÀ KHÁCH HÀNG ===
+                maKhachHang = user.KhachHang.MaKhachHang;
+                hoTen = user.KhachHang.HoTen;
+                // Khách hàng thường không có bảng VaiTro riêng, ta gán cứng hoặc quy định ID
+                maVaiTro = -1;
+                tenVaiTro = "KhachHang";
+            }
+
+            // 4. Tạo Token (Cần cập nhật hàm này ở Bước 3)
+            string token = GenerateJwtToken(user, maNhanVien, maKhachHang, tenVaiTro);
 
             return new LoginResponse
             {
                 MaNhanVien = maNhanVien,
+                MaKhachHang = maKhachHang, // Trả về mã khách hàng
                 HoTen = hoTen,
                 TenDangNhap = user.TenDangNhap,
                 MaVaiTro = maVaiTro,
@@ -417,18 +435,30 @@ namespace WEBPC_API.Services.Business
             return true;
         }
 
-        private string GenerateJwtToken(TaiKhoan user, int maNhanVien, string roleName)
+        // Cập nhật tham số đầu vào
+        private string GenerateJwtToken(TaiKhoan user, int? maNhanVien, int? maKhachHang, string roleName)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
             var claims = new List<Claim>
+    {
+        new Claim("MaTaiKhoan", user.MaTaiKhoan.ToString()),
+        new Claim(ClaimTypes.Name, user.TenDangNhap),
+        new Claim(ClaimTypes.Role, roleName)
+    };
+
+            // Nếu là nhân viên thì thêm Claim MaNhanVien
+            if (maNhanVien.HasValue)
             {
-                new Claim("MaTaiKhoan", user.MaTaiKhoan.ToString()),
-                new Claim("MaNhanVien", maNhanVien.ToString()),
-                new Claim(ClaimTypes.Name, user.TenDangNhap),
-                new Claim(ClaimTypes.Role, roleName)
-            };
+                claims.Add(new Claim("MaNhanVien", maNhanVien.Value.ToString()));
+            }
+
+            // Nếu là khách hàng thì thêm Claim MaKhachHang
+            if (maKhachHang.HasValue)
+            {
+                claims.Add(new Claim("MaKhachHang", maKhachHang.Value.ToString()));
+            }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
