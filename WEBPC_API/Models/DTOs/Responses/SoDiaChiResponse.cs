@@ -4,6 +4,8 @@
     {
         public int MaSoDiaChi { get; set; }
         public int MaKhachHang { get; set; }
+        public string TenNguoiNhan { get; set; }
+        public string SoDienThoai { get; set; }
         public string DiaChiCuThe { get; set; }
 
         public string TinhThanhId { get; set; }

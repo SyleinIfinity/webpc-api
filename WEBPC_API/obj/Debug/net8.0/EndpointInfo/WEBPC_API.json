@@ -2229,6 +2229,8 @@
           "maKhachHang",
           "phuongXaId",
           "quanHuyenId",
+          "soDienThoai",
+          "tenNguoiNhan",
           "tinhThanhId"
         ],
         "type": "object",
@@ -2236,6 +2238,14 @@
           "maKhachHang": {
             "type": "integer",
             "format": "int32"
+          },
+          "tenNguoiNhan": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "soDienThoai": {
+            "minLength": 1,
+            "type": "string"
           },
           "diaChiCuThe": {
             "minLength": 1,
@@ -2540,6 +2550,14 @@
       "UpdateSoDiaChiRequest": {
         "type": "object",
         "properties": {
+          "tenNguoiNhan": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
           "diaChiCuThe": {
             "type": "string",
             "nullable": true

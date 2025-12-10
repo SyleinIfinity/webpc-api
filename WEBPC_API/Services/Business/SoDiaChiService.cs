@@ -43,6 +43,8 @@ namespace WEBPC_API.Services.Business
             var entity = new SoDiaChi
             {
                 MaKhachHang = request.MaKhachHang,
+                TenNguoiNhan = request.TenNguoiNhan,
+                SoDienThoai = request.SoDienThoai,
                 DiaChiCuThe = request.DiaChiCuThe,
                 TinhThanhId = request.TinhThanhId,
                 QuanHuyenId = request.QuanHuyenId,
@@ -69,6 +71,8 @@ namespace WEBPC_API.Services.Business
             var existing = await _repo.GetByIdAsync(id);
             if (existing == null) return false;
 
+            if (!string.IsNullOrEmpty(request.TenNguoiNhan)) existing.TenNguoiNhan = request.TenNguoiNhan;
+            if (!string.IsNullOrEmpty(request.SoDienThoai)) existing.SoDienThoai = request.SoDienThoai;
             // Nếu có thay đổi địa giới hành chính -> Cần lấy lại tên
             bool locationChanged = false;
             if (!string.IsNullOrEmpty(request.TinhThanhId) && request.TinhThanhId != existing.TinhThanhId) locationChanged = true;
@@ -128,6 +132,8 @@ namespace WEBPC_API.Services.Business
             {
                 MaSoDiaChi = s.MaSoDiaChi,
                 MaKhachHang = s.MaKhachHang,
+                TenNguoiNhan = s.TenNguoiNhan,
+                SoDienThoai = s.SoDienThoai,
                 DiaChiCuThe = s.DiaChiCuThe,
                 TinhThanhId = s.TinhThanhId,
                 TenTinhThanh = s.TenTinhThanh,

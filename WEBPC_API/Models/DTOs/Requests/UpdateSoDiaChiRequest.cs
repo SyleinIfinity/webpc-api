@@ -2,6 +2,8 @@
 {
     public class UpdateSoDiaChiRequest
     {
+        public string TenNguoiNhan { get; set; }
+        public string SoDienThoai { get; set; }
         public string DiaChiCuThe { get; set; }
         public string TinhThanhId { get; set; }
         public string QuanHuyenId { get; set; }

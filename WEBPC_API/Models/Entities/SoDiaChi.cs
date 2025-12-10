@@ -12,6 +12,16 @@ namespace WEBPC_API.Models.Entities
 
         public int MaKhachHang { get; set; }
 
+        // --- BỔ SUNG 2 TRƯỜNG MỚI ---
+        [Required]
+        [MaxLength(100)]
+        public string TenNguoiNhan { get; set; }
+
+        [Required]
+        [MaxLength(15)]
+        public string SoDienThoai { get; set; }
+
+
         [Required]
         [MaxLength(255)]
         public string DiaChiCuThe { get; set; } // Đây là thuộc tính bị báo lỗi thiếu

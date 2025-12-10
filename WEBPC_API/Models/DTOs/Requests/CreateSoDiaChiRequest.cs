@@ -7,6 +7,12 @@ namespace WEBPC_API.Models.DTOs.Requests
         [Required]
         public int MaKhachHang { get; set; }
 
+        [Required(ErrorMessage = "Tên người nhận là bắt buộc")]
+        public string TenNguoiNhan { get; set; }
+
+        [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
+        public string SoDienThoai { get; set; }
+
         [Required]
         public string DiaChiCuThe { get; set; }
 
