@@ -11,5 +11,7 @@ namespace WEBPC_API.Services.Interfaces
 
         // Xóa 1 ảnh theo ID
         Task<bool> DeleteImageAsync(int imageId);
+
+        Task<bool> DeleteAllImagesByProductIdAsync(int productId);
     }
 }

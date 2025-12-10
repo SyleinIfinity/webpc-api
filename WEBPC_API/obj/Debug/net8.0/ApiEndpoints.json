@@ -158,6 +158,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WEBPC_API.Controllers.DonHangController",
+    "Method": "GetOrdersByCustomer",
+    "RelativePath": "api/DonHang/history/{maKhachHang}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maKhachHang",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WEBPC_API.Controllers.GioHangController",
     "Method": "GetCart",
     "RelativePath": "api/GioHang/{maKhachHang}",
@@ -252,6 +268,22 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.HinhAnhSanPhamController",
+    "Method": "DeleteAllByProductId",
+    "RelativePath": "api/HinhAnhSanPham/delete-all/{productId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -1030,6 +1062,48 @@
       {
         "Name": "request",
         "Type": "WEBPC_API.Models.DTOs.Requests.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.TaiKhoanController",
+    "Method": "UpdateAvatar",
+    "RelativePath": "api/TaiKhoan/update-avatar/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.TaiKhoanController",
+    "Method": "UpdateStatus",
+    "RelativePath": "api/TaiKhoan/update-status/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WEBPC_API.Controllers.UpdateStatusRequest",
         "IsRequired": true
       }
     ],

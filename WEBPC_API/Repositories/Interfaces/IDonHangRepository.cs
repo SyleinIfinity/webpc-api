@@ -12,5 +12,7 @@ namespace WEBPC_API.Repositories.Interfaces
         // --- BỔ SUNG THÊM 2 HÀM NÀY ---
         Task<IEnumerable<DonHang>> GetAllAsync(); // Để xem danh sách
         Task<DonHang> AddAsync(DonHang donHang);  // Để tạo đơn mới
+
+        Task<IEnumerable<DonHang>> GetByKhachHangIdAsync(int maKhachHang);
     }
 }

@@ -64,6 +64,19 @@ namespace WEBPC_API.Controllers
                 maCode = donHang.maCodeDonHang // Mã Code (Dùng cho Webhook Casso)
             });
         }
+
+        [HttpGet("history/{maKhachHang}")]
+        public async Task<IActionResult> GetOrdersByCustomer(int maKhachHang)
+        {
+            var list = await _repo.GetByKhachHangIdAsync(maKhachHang);
+
+            if (list == null || !list.Any())
+            {
+                return Ok(new List<DonHang>()); // Trả về danh sách rỗng thay vì 404
+            }
+
+            return Ok(list);
+        }
     }
 
     // Class DTO nhỏ để hứng dữ liệu tạo đơn nhanh
@@ -72,4 +85,6 @@ namespace WEBPC_API.Controllers
         public int MaKhachHang { get; set; }
         public decimal TongTien { get; set; }
     }
+
+
 }

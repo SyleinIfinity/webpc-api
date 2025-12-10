@@ -56,5 +56,15 @@ namespace WEBPC_API.Repositories.Implements
             await _context.SaveChangesAsync();
             return donHang;
         }
+
+        public async Task<IEnumerable<DonHang>> GetByKhachHangIdAsync(int maKhachHang)
+        {
+            return await _context.DonHang
+                .Include(d => d.ChiTietDonHangs) // Kèm chi tiết để hiển thị sản phẩm
+                    .ThenInclude(ct => ct.SanPham) // Kèm tên sản phẩm
+                .Where(d => d.maKhachHang == maKhachHang) // Lọc theo khách
+                .OrderByDescending(d => d.ngayDat) // Đơn mới nhất lên đầu
+                .ToListAsync();
+        }
     }
 }

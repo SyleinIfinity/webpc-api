@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using WEBPC_API.Data;
+using WEBPC_API.Helpers;
 using WEBPC_API.Models.DTOs.Requests;
 using WEBPC_API.Models.DTOs.Responses;
 using WEBPC_API.Models.Entities; // Đảm bảo namespace này đúng với dự án của bạn
@@ -28,6 +29,7 @@ namespace WEBPC_API.Services.Business
         private readonly IKhachHangRepository _khRepo;
         private readonly DataContext _context;
         private readonly IConfiguration _configuration; // Biến mới để đọc file appsettings
+        private readonly FileUploadHelper _fileHelper;
 
         // Cập nhật Constructor để nhận thêm IConfiguration
         public UserService(
@@ -36,7 +38,8 @@ namespace WEBPC_API.Services.Business
             IVaiTroRepository vtRepo,
             IKhachHangRepository khRepo,
             DataContext context,               // <--- Thêm cái này
-            IConfiguration configuration)      // <--- Thêm cái này
+            IConfiguration configuration,      // <--- Thêm cái này
+            FileUploadHelper fileHelper)
         {
             _nvRepo = nvRepo;
             _tkRepo = tkRepo;
@@ -44,6 +47,7 @@ namespace WEBPC_API.Services.Business
             _khRepo = khRepo;
             _context = context;               // <--- Gán giá trị để không bị Null
             _configuration = configuration;   // <--- Gán giá trị để không bị Null
+            _fileHelper = fileHelper;
         }
 
         // ==========================================================
@@ -358,6 +362,61 @@ namespace WEBPC_API.Services.Business
             };
         }
 
+        // --- [MỚI] HÀM CẬP NHẬT ẢNH ĐẠI DIỆN ---
+        public async Task<string> UpdateAvatarAsync(int id, IFormFile file)
+        {
+            // 1. Tìm tài khoản
+            var user = await _tkRepo.GetByIdAsync(id);
+            if (user == null) throw new Exception("Tài khoản không tồn tại.");
+
+            // 2. Xóa ảnh cũ trên Cloudinary (Nếu có)
+            // Lưu ý: Sửa 'HinhAnh' thành 'AnhDaiDien'
+            if (!string.IsNullOrEmpty(user.AnhDaiDien))
+            {
+                try
+                {
+                    string publicId = GetPublicIdFromUrl(user.AnhDaiDien);
+                    if (!string.IsNullOrEmpty(publicId))
+                    {
+                        // Gọi hàm xóa từ Helper
+                        await _fileHelper.DeleteImageAsync(publicId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Ghi log lỗi nhưng không chặn quy trình (để vẫn cho up ảnh mới)
+                    Console.WriteLine($"[CẢNH BÁO] Lỗi xóa ảnh cũ: {ex.Message}");
+                }
+            }
+
+            // 3. Upload ảnh mới lên Cloudinary
+            // Gọi đúng hàm dành cho Avatar
+            var uploadResult = await _fileHelper.UploadAvatarAsync(file);
+            if (string.IsNullOrEmpty(uploadResult))
+                throw new Exception("Lỗi khi upload ảnh mới lên Cloud.");
+
+            // 4. Cập nhật đường dẫn mới vào DB
+            user.AnhDaiDien = uploadResult; // <--- Đã sửa đúng tên biến
+            await _tkRepo.UpdateAsync(user);
+
+            return user.AnhDaiDien;
+        }
+
+        // --- [MỚI] HÀM CẬP NHẬT TRẠNG THÁI ---
+        public async Task<bool> UpdateStatusAsync(int id, string trangThaiMoi)
+        {
+            var user = await _tkRepo.GetByIdAsync(id);
+            if (user == null) throw new Exception("Tài khoản không tồn tại.");
+
+            // Kiểm tra giá trị hợp lệ (Active/Locked)
+            if (trangThaiMoi != "Active" && trangThaiMoi != "Locked")
+                throw new Exception("Trạng thái không hợp lệ (Chỉ chấp nhận 'Active' hoặc 'Locked').");
+
+            user.TrangThai = trangThaiMoi;
+            await _tkRepo.UpdateAsync(user);
+            return true;
+        }
+
         private string GenerateJwtToken(TaiKhoan user, int maNhanVien, string roleName)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -382,6 +441,30 @@ namespace WEBPC_API.Services.Business
 
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+        }
+
+        // Hàm phụ trợ tách PublicID từ URL Cloudinary
+        private string GetPublicIdFromUrl(string url)
+        {
+            try
+            {
+                var uri = new Uri(url);
+                string path = uri.AbsolutePath;
+                string tag = "upload/";
+                int idx = path.IndexOf(tag);
+                if (idx != -1)
+                {
+                    string part = path.Substring(idx + tag.Length);
+                    int slashIdx = part.IndexOf('/');
+                    string publicIdWithExt = part.Substring(slashIdx + 1);
+                    return publicIdWithExt.Substring(0, publicIdWithExt.LastIndexOf('.'));
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

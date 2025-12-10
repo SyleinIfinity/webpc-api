@@ -33,49 +33,42 @@ namespace WEBPC_API.Services.Business
 
         public async Task<bool> CreateProductAsync(CreateProductRequest request)
         {
-            // 1. Tạo entity sản phẩm và lưu vào DB trước để lấy ID
+            // 1. Lưu sản phẩm
             var newProduct = new SanPham
             {
                 TenSanPham = request.TenSanPham,
                 GiaBan = request.GiaBan,
-                GiaKhuyenMai = request.GiaKhuyenMai, // Mới
+                GiaKhuyenMai = request.GiaKhuyenMai,
                 TrangThai = request.TrangThai,
                 SoLuongTon = request.SoLuongTon,
                 MoTa = request.MoTa,
-                MaDanhMuc = request.MaDanhMuc // <--- Đã thêm dòng này
+                MaDanhMuc = request.MaDanhMuc
             };
 
             int newProductId = await _repo.AddAsync(newProduct);
 
-            // 2. Xử lý upload ảnh (nếu có)
+            // 2. Xử lý ảnh (CODE MỚI)
             if (request.HinhAnhs != null && request.HinhAnhs.Count > 0)
             {
                 var imageEntities = new List<HinhAnhSanPham>();
-                int count = 1;
 
                 foreach (var file in request.HinhAnhs)
                 {
-                    // QUY TẮC ĐẶT TÊN: SP_{MãSP}_{SốThứTự} -> VD: SP_15_01
-                    string customFileName = $"SP_{newProductId}_{count:D2}";
-
-                    var uploadResult = await _fileHelper.UploadImageAsync(file, "SanPhamPC", customFileName);
+                    // Gọi hàm mới dành cho Product
+                    var uploadResult = await _fileHelper.UploadProductImageAsync(file);
 
                     if (uploadResult != null)
                     {
                         imageEntities.Add(new HinhAnhSanPham
                         {
                             MaSanPham = newProductId,
-                            UrlHinhAnh = uploadResult.SecureUrl.ToString(),
-                            PublicId = uploadResult.PublicId
+                            UrlHinhAnh = uploadResult.Url,      // Lấy từ DTO
+                            PublicId = uploadResult.PublicId    // Lấy từ DTO
                         });
                     }
-                    count++;
                 }
-
-                // 3. Lưu thông tin ảnh vào DB
                 await _repo.AddImagesAsync(imageEntities);
             }
-
             return true;
         }
 
@@ -125,25 +118,21 @@ namespace WEBPC_API.Services.Business
             // 2. Thêm ảnh mới
             if (request.HinhAnhs != null && request.HinhAnhs.Count > 0)
             {
-                int currentCount = product.HinhAnhs.Count + 1;
                 var newImages = new List<HinhAnhSanPham>();
-
                 foreach (var file in request.HinhAnhs)
                 {
-                    // Logic đặt tên file cũ
-                    string customFileName = $"SP_{id}_{currentCount:D2}";
-                    var uploadResult = await _fileHelper.UploadImageAsync(file, "SanPhamPC", customFileName);
+                    // Gọi hàm mới
+                    var uploadResult = await _fileHelper.UploadProductImageAsync(file);
 
                     if (uploadResult != null)
                     {
                         newImages.Add(new HinhAnhSanPham
                         {
                             MaSanPham = id,
-                            UrlHinhAnh = uploadResult.SecureUrl.ToString(),
+                            UrlHinhAnh = uploadResult.Url,
                             PublicId = uploadResult.PublicId
                         });
                     }
-                    currentCount++;
                 }
                 await _repo.AddImagesAsync(newImages);
             }
@@ -186,15 +175,11 @@ namespace WEBPC_API.Services.Business
                 MaSanPham = p.MaSanPham,
                 TenSanPham = p.TenSanPham,
                 GiaBan = p.GiaBan,
-                GiaKhuyenMai = p.GiaKhuyenMai, // Mới
+                GiaKhuyenMai = p.GiaKhuyenMai,
                 TrangThai = p.TrangThai,
                 SoLuongTon = p.SoLuongTon,
                 MoTa = p.MoTa,
-
-                // --- BỔ SUNG DÒNG NÀY ---
-                // Sử dụng toán tử ?. (null conditional) để tránh lỗi nếu DanhMuc bị null
                 TenDanhMuc = p.DanhMuc?.TenDanhMuc,
-
                 DanhSachAnh = p.HinhAnhs?.Select(h => new ImageResponse
                 {
                     Id = h.Id,

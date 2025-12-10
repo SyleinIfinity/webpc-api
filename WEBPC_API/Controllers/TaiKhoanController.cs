@@ -17,37 +17,28 @@ namespace WEBPC_API.Controllers
         }
 
         // ==========================================================
-        // 1. API ĐĂNG NHẬP (MỚI BỔ SUNG)
-        // Đường dẫn: POST api/TaiKhoan/login
+        // 1. API ĐĂNG NHẬP
+        // URL: POST api/TaiKhoan/login
         // ==========================================================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // Kiểm tra dữ liệu gửi lên (Validation)
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // Gọi Service xử lý đăng nhập
             var result = await _userService.Login(request);
 
-            // Nếu kết quả trả về null nghĩa là sai thông tin
             if (result == null)
             {
                 return Unauthorized(new { message = "Tên đăng nhập hoặc mật khẩu không đúng." });
             }
 
-            // Đăng nhập thành công -> Trả về Token và thông tin User
             return Ok(result);
         }
 
         // ==========================================================
-        // 2. CÁC API CŨ (GIỮ NGUYÊN)
+        // 2. API LẤY DANH SÁCH TÀI KHOẢN
+        // URL: GET api/TaiKhoan
         // ==========================================================
-
-        // Lấy danh sách tài khoản
-        // GET: api/TaiKhoan
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -55,8 +46,11 @@ namespace WEBPC_API.Controllers
             return Ok(data);
         }
 
-        // Đổi mật khẩu
-        // PATCH: api/TaiKhoan/{id}/change-password
+        // ==========================================================
+        // 3. API ĐỔI MẬT KHẨU
+        // URL: PATCH api/TaiKhoan/{id}/change-password
+        // Body: "MatKhauMoi123" (Gửi dạng chuỗi JSON: "string")
+        // ==========================================================
         [HttpPatch("{id}/change-password")]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] string newPassword)
         {
@@ -72,5 +66,62 @@ namespace WEBPC_API.Controllers
             }
             return NotFound(new { message = "Không tìm thấy tài khoản." });
         }
+
+        // ==========================================================
+        // 4. API CẬP NHẬT ẢNH ĐẠI DIỆN (AVATAR) - [MỚI BỔ SUNG]
+        // URL: PATCH api/TaiKhoan/update-avatar/{id}
+        // Content-Type: multipart/form-data
+        // Key form: "file" (là file ảnh)
+        // ==========================================================
+        [HttpPatch("update-avatar/{id}")]
+        public async Task<IActionResult> UpdateAvatar(int id, IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest(new { message = "Vui lòng chọn file ảnh hợp lệ." });
+
+                // Gọi Service xử lý (Xóa ảnh cũ -> Up ảnh mới -> Lưu DB)
+                var newUrl = await _userService.UpdateAvatarAsync(id, file);
+
+                return Ok(new
+                {
+                    message = "Cập nhật ảnh đại diện thành công.",
+                    url = newUrl // Trả về link ảnh mới để Frontend hiển thị ngay
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // ==========================================================
+        // 5. API CẬP NHẬT TRẠNG THÁI (KHÓA/MỞ) - [MỚI BỔ SUNG]
+        // URL: PATCH api/TaiKhoan/update-status/{id}
+        // Body JSON: { "trangThai": "Locked" } hoặc { "trangThai": "Active" }
+        // ==========================================================
+        [HttpPatch("update-status/{id}")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.TrangThai))
+                    return BadRequest(new { message = "Trạng thái không được để trống." });
+
+                await _userService.UpdateStatusAsync(id, request.TrangThai);
+
+                return Ok(new { message = $"Đã cập nhật trạng thái thành: {request.TrangThai}" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+    }
+
+    public class UpdateStatusRequest
+    {
+        public string TrangThai { get; set; } // "Active" hoặc "Locked"
     }
 }

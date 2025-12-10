@@ -35,24 +35,19 @@ namespace WEBPC_API.Services.Business
 
         public async Task<ImageResponse> AddImageToProductAsync(int productId, IFormFile file)
         {
-            // 1. Kiểm tra sản phẩm có tồn tại không
             var product = await _productRepo.GetByIdAsync(productId);
             if (product == null) throw new Exception("Sản phẩm không tồn tại");
 
-            // 2. Tạo tên file: SP_{ID}_{Random} để tránh trùng
-            string customName = $"SP_{productId}_{Guid.NewGuid().ToString().Substring(0, 8)}";
-
-            // 3. Upload lên Cloudinary
-            var uploadResult = await _fileHelper.UploadImageAsync(file, "SanPhamPC", customName);
+            // SỬA ĐOẠN NÀY: Gọi hàm mới
+            var uploadResult = await _fileHelper.UploadProductImageAsync(file);
 
             if (uploadResult == null) throw new Exception("Lỗi upload ảnh lên Cloud");
 
-            // 4. Lưu vào Database
             var newImage = new HinhAnhSanPham
             {
                 MaSanPham = productId,
-                UrlHinhAnh = uploadResult.SecureUrl.ToString(),
-                PublicId = uploadResult.PublicId
+                UrlHinhAnh = uploadResult.Url,      // .Url
+                PublicId = uploadResult.PublicId    // .PublicId
             };
 
             await _imageRepo.AddAsync(newImage);
@@ -79,6 +74,40 @@ namespace WEBPC_API.Services.Business
 
             // 3. Xóa trong Database
             await _imageRepo.DeleteAsync(image);
+            return true;
+        }
+
+        public async Task<bool> DeleteAllImagesByProductIdAsync(int productId)
+        {
+            // 1. Lấy danh sách ảnh của sản phẩm
+            var images = await _imageRepo.GetByProductIdAsync(productId);
+
+            if (images == null || !images.Any())
+                return false; // Không có ảnh để xóa
+
+            // 2. Duyệt qua từng ảnh để xóa
+            foreach (var img in images)
+            {
+                // A. Xóa trên Cloudinary (Nếu có PublicId)
+                if (!string.IsNullOrEmpty(img.PublicId))
+                {
+                    try
+                    {
+                        await _fileHelper.DeleteImageAsync(img.PublicId);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Ghi log lỗi xóa cloud nhưng vẫn tiếp tục xóa DB
+                        Console.WriteLine($"Lỗi xóa ảnh Cloudinary (ID: {img.PublicId}): {ex.Message}");
+                    }
+                }
+
+                // B. Xóa trong Database
+                // Lưu ý: Nếu Repository của bạn chưa có hàm xóa nhiều (DeleteRange), 
+                // ta gọi DeleteAsync từng cái. Với số lượng ảnh ít (<20) thì vẫn ổn.
+                await _imageRepo.DeleteAsync(img);
+            }
+
             return true;
         }
     }

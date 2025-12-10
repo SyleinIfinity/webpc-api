@@ -51,5 +51,29 @@ namespace WEBPC_API.Controllers
             if (!result) return NotFound("Không tìm thấy hình ảnh");
             return Ok("Đã xóa hình ảnh thành công");
         }
+
+        // ==========================================================
+        // API XÓA TẤT CẢ ẢNH CỦA SẢN PHẨM
+        // URL: DELETE api/HinhAnhSanPham/delete-all/{productId}
+        // ==========================================================
+        [HttpDelete("delete-all/{productId}")]
+        public async Task<IActionResult> DeleteAllByProductId(int productId)
+        {
+            try
+            {
+                var result = await _service.DeleteAllImagesByProductIdAsync(productId);
+
+                if (result)
+                {
+                    return Ok(new { message = "Đã xóa toàn bộ hình ảnh của sản phẩm." });
+                }
+
+                return NotFound(new { message = "Sản phẩm không có hình ảnh nào hoặc không tồn tại." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
     }
 }

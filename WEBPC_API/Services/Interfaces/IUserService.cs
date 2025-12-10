@@ -31,5 +31,8 @@ namespace WEBPC_API.Services.Interfaces
 
         // --- BỔ SUNG HÀM ĐĂNG NHẬP Ở ĐÂY ---
         Task<LoginResponse?> Login(LoginRequest request);
+
+        Task<string> UpdateAvatarAsync(int id, IFormFile file); // Trả về URL ảnh mới
+        Task<bool> UpdateStatusAsync(int id, string trangThaiMoi);
     }
 }

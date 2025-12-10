@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 
 namespace WEBPC_API.Helpers
 {
-    // Class để map dữ liệu từ appsettings.json
     public class CloudinarySettings
     {
         public string CloudName { get; set; }
@@ -12,9 +11,18 @@ namespace WEBPC_API.Helpers
         public string ApiSecret { get; set; }
     }
 
+    // Class DTO nhỏ để hứng kết quả trả về
+    public class CloudinaryResponse
+    {
+        public string Url { get; set; }
+        public string PublicId { get; set; }
+    }
+
     public class FileUploadHelper
     {
         private readonly Cloudinary _cloudinary;
+        private const string FOLDER_AVATAR = "WEBPC/Avatars";
+        private const string FOLDER_PRODUCT = "WEBPC/Products";
 
         public FileUploadHelper(IOptions<CloudinarySettings> config)
         {
@@ -26,32 +34,49 @@ namespace WEBPC_API.Helpers
             _cloudinary = new Cloudinary(acc);
         }
 
-        // Hàm Upload ảnh
-        // file: File ảnh từ form
-        // folderName: Tên thư mục trên Cloud (ví dụ: "SanPham")
-        // customFileName: Tên file muốn đặt (ví dụ: "liems01"), nếu null sẽ lấy tên gốc
-        public async Task<ImageUploadResult> UploadImageAsync(IFormFile file, string folderName, string customFileName = null)
+        // 1. Upload Avatar (Giữ nguyên trả về string cho User Service đỡ phải sửa nhiều)
+        public async Task<string> UploadAvatarAsync(IFormFile file)
         {
-            if (file.Length > 0)
+            var result = await UploadFileInternalAsync(file, FOLDER_AVATAR);
+            return result?.Url;
+        }
+
+        // 2. Upload Sản Phẩm (Trả về Object chứa PublicId để lưu DB)
+        public async Task<CloudinaryResponse> UploadProductImageAsync(IFormFile file)
+        {
+            return await UploadFileInternalAsync(file, FOLDER_PRODUCT);
+        }
+
+        // 3. Logic chung
+        private async Task<CloudinaryResponse> UploadFileInternalAsync(IFormFile file, string folderName)
+        {
+            if (file == null || file.Length == 0) return null;
+
+            await using var stream = file.OpenReadStream();
+            string uniqueFileName = Guid.NewGuid().ToString(); // Dùng GUID cho ngắn gọn, không cần tên gốc
+
+            var uploadParams = new ImageUploadParams
             {
-                await using var stream = file.OpenReadStream();
+                File = new FileDescription(file.FileName, stream),
+                Folder = folderName,
+                PublicId = uniqueFileName,
+                Overwrite = true
+            };
 
-                var uploadParams = new ImageUploadParams
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return new CloudinaryResponse
                 {
-                    File = new FileDescription(file.FileName, stream),
-                    Folder = folderName,
-                    // Nếu có tên tùy chỉnh thì dùng, không thì để Cloudinary tự sinh ngẫu nhiên hoặc dùng tên gốc
-                    PublicId = customFileName ?? Path.GetFileNameWithoutExtension(file.FileName),
-                    Overwrite = true // Cho phép ghi đè nếu trùng tên
+                    Url = uploadResult.SecureUrl.AbsoluteUri,
+                    PublicId = uploadResult.PublicId
                 };
-
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                return uploadResult;
             }
             return null;
         }
 
-        // Hàm Xóa ảnh
+        // 4. Xóa ảnh
         public async Task<DeletionResult> DeleteImageAsync(string publicId)
         {
             var deleteParams = new DeletionParams(publicId);
