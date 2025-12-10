@@ -22,8 +22,6 @@ namespace WEBPC_API.Models.DTOs.Requests
 
         public int? MaDanhMuc { get; set; }
 
-        public int? AnhDaiDienId { get; set; }
-
         // Danh sách ảnh thêm mới (nếu có)
         public List<IFormFile>? HinhAnhs { get; set; }
 

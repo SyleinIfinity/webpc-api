@@ -139,32 +139,6 @@ namespace WEBPC_API.Services.Business
                 await _repo.AddImagesAsync(newImages);
             }
 
-            // --- BỔ SUNG: LOGIC SET ẢNH ĐẠI DIỆN ---
-            // Chỉ chạy khi Client có gửi AnhDaiDienId lên
-            if (request.AnhDaiDienId.HasValue)
-            {
-                // Lấy lại danh sách ảnh mới nhất của sản phẩm (vì vừa có thể xóa/thêm ở trên)
-                var currentImages = await _imageRepo.GetByProductIdAsync(id);
-                var targetImage = currentImages.FirstOrDefault(x => x.Id == request.AnhDaiDienId.Value);
-
-                if (targetImage != null)
-                {
-                    // Reset tất cả về false
-                    foreach (var img in currentImages)
-                    {
-                        if (img.LaAnhDaiDien)
-                        {
-                            img.LaAnhDaiDien = false;
-                            await _imageRepo.UpdateAsync(img);
-                        }
-                    }
-
-                    // Set ảnh đích thành true
-                    targetImage.LaAnhDaiDien = true;
-                    await _imageRepo.UpdateAsync(targetImage);
-                }
-            }
-
             return true;
         }
 
