@@ -6,7 +6,11 @@
         public string TenDanhMuc { get; set; }
         public string MoTa { get; set; }
 
-        // Bổ sung thêm thông tin hữu ích: Số lượng sản phẩm đang có trong danh mục này
-        public int SoLuongSanPham { get; set; }
+        // --- BỔ SUNG ---
+        public int? MaDanhMucCha { get; set; }
+        public string? TenDanhMucCha { get; set; } // Hiển thị tên cha cho dễ nhìn
+
+        // Bonus: Số lượng con (nếu cần)
+        public int SoLuongDanhMucCon { get; set; }
     }
 }

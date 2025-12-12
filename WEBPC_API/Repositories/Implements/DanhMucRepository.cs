@@ -2,8 +2,9 @@
 using WEBPC_API.Data;
 using WEBPC_API.Models.Entities;
 using WEBPC_API.Models.Interfaces;
+using WEBPC_API.Repositories.Interfaces;
 
-namespace WEBPC_API.Models.Repositories
+namespace WEBPC_API.Repositories.Implements
 {
     public class DanhMucRepository : IDanhMucRepository
     {
@@ -14,49 +15,46 @@ namespace WEBPC_API.Models.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<DanhMuc>> GetAllAsync()
+        public async Task<List<DanhMuc>> GetAllAsync()
         {
-            // Include SanPhams để đếm số lượng (nếu cần)
-            return await _context.DanhMucs.Include(d => d.SanPhams).ToListAsync();
+            // Include DanhMucCha để lấy tên của cha
+            // Include DanhMucCons để đếm số lượng con
+            return await _context.DanhMucs
+                .Include(d => d.DanhMucCha)
+                .Include(d => d.DanhMucCons)
+                .ToListAsync();
         }
 
-        public async Task<DanhMuc> GetByIdAsync(int id)
+        public async Task<DanhMuc?> GetByIdAsync(int id)
         {
-            return await _context.DanhMucs.Include(d => d.SanPhams)
-                                 .FirstOrDefaultAsync(d => d.MaDanhMuc == id);
+            return await _context.DanhMucs
+                .Include(d => d.DanhMucCha)
+                .Include(d => d.DanhMucCons)
+                .FirstOrDefaultAsync(d => d.MaDanhMuc == id);
         }
 
-        public async Task<int> AddAsync(DanhMuc danhMuc)
+        public async Task<DanhMuc> CreateAsync(DanhMuc danhMuc)
         {
             _context.DanhMucs.Add(danhMuc);
             await _context.SaveChangesAsync();
-            return danhMuc.MaDanhMuc;
+            return danhMuc;
         }
 
-        public async Task UpdateAsync(DanhMuc danhMuc)
+        public async Task<DanhMuc> UpdateAsync(DanhMuc danhMuc)
         {
             _context.DanhMucs.Update(danhMuc);
             await _context.SaveChangesAsync();
+            return danhMuc;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var dm = await _context.DanhMucs.FindAsync(id);
-            if (dm != null)
+            var danhMuc = await _context.DanhMucs.FindAsync(id);
+            if (danhMuc != null)
             {
-                _context.DanhMucs.Remove(dm);
+                _context.DanhMucs.Remove(danhMuc);
                 await _context.SaveChangesAsync();
             }
-        }
-
-        public async Task<bool> IsNameExistsAsync(string name)
-        {
-            return await _context.DanhMucs.AnyAsync(d => d.TenDanhMuc == name);
-        }
-
-        public async Task<bool> HasProductsAsync(int id)
-        {
-            return await _context.SanPhams.AnyAsync(s => s.MaDanhMuc == id);
         }
     }
 }

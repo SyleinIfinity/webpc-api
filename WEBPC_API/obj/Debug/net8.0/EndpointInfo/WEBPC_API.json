@@ -2141,6 +2141,11 @@
           "moTa": {
             "type": "string",
             "nullable": true
+          },
+          "maDanhMucCha": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2455,6 +2460,11 @@
           },
           "moTa": {
             "type": "string",
+            "nullable": true
+          },
+          "maDanhMucCha": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WEBPC_API.Models.Entities
 {
@@ -9,16 +10,24 @@ namespace WEBPC_API.Models.Entities
         [Key]
         public int MaDanhMuc { get; set; }
 
-        [Required(ErrorMessage = "Tên danh mục là bắt buộc")]
+        [Required]
         [MaxLength(100)]
         public string TenDanhMuc { get; set; }
 
         [MaxLength(255)]
-        public string MoTa { get; set; }
+        public string? MoTa { get; set; }
 
-        // Relationship: Một danh mục có nhiều sản phẩm
-        // JsonIgnore để tránh vòng lặp khi query dữ liệu
-        [System.Text.Json.Serialization.JsonIgnore]
-        public ICollection<SanPham> SanPhams { get; set; }
+        // --- BỔ SUNG CẤU HÌNH DANH MỤC CHA ---
+        public int? MaDanhMucCha { get; set; }
+
+        [ForeignKey("MaDanhMucCha")]
+        [JsonIgnore] // Tránh vòng lặp khi serialize
+        public virtual DanhMuc? DanhMucCha { get; set; }
+
+        public virtual ICollection<DanhMuc> DanhMucCons { get; set; }
+        // --------------------------------------
+
+        [JsonIgnore]
+        public virtual ICollection<SanPham> SanPhams { get; set; }
     }
 }

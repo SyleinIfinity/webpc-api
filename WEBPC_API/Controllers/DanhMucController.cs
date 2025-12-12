@@ -15,20 +15,30 @@ namespace WEBPC_API.Controllers
             _service = service;
         }
 
+        // GET: api/DanhMuc
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _service.GetAllCategoriesAsync());
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _service.GetCategoryByIdAsync(id);
-            if (result == null) return NotFound("Không tìm thấy danh mục");
+            var result = await _service.GetAllCategoriesAsync();
             return Ok(result);
         }
 
+        // GET: api/DanhMuc/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var result = await _service.GetCategoryByIdAsync(id);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Không tìm thấy danh mục" });
+            }
+        }
+
+        // POST: api/DanhMuc
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
         {
@@ -36,39 +46,52 @@ namespace WEBPC_API.Controllers
 
             try
             {
-                await _service.CreateCategoryAsync(request);
-                return StatusCode(201, "Tạo danh mục thành công");
+                var result = await _service.CreateCategoryAsync(request);
+                return CreatedAtAction(nameof(GetById), new { id = result.MaDanhMuc }, result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Bắt lỗi nghiệp vụ (VD: Mã cha không tồn tại)
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        [HttpPatch("{id}")] // <--- Đổi từ Put sang Patch
+        // PATCH: api/DanhMuc/5
+        [HttpPatch("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryRequest request)
         {
             try
             {
                 var result = await _service.UpdateCategoryAsync(id, request);
-                if (!result) return NotFound("Không tìm thấy danh mục");
-                return Ok("Cập nhật thành công");
+                return Ok(result);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Không tìm thấy danh mục để cập nhật" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Bắt lỗi nghiệp vụ (VD: Chọn cha là chính nó)
+                return BadRequest(new { message = ex.Message });
             }
         }
 
+        // DELETE: api/DanhMuc/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var message = await _service.DeleteCategoryAsync(id);
-            if (message == "OK")
-                return Ok("Xóa thành công");
+            try
+            {
+                var success = await _service.DeleteCategoryAsync(id);
+                if (!success) return NotFound(new { message = "Không tìm thấy danh mục để xóa" });
 
-            // Nếu lỗi do logic (vd: còn sản phẩm) thì trả về BadRequest
-            return BadRequest(message);
+                return Ok(new { message = "Xóa danh mục thành công" });
+            }
+            catch (Exception ex)
+            {
+                // Bắt lỗi nghiệp vụ (VD: Không được xóa vì đang chứa danh mục con)
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

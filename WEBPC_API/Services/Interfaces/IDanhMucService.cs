@@ -5,10 +5,19 @@ namespace WEBPC_API.Services.Interfaces
 {
     public interface IDanhMucService
     {
-        Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync();
+        // Lấy tất cả danh mục
+        Task<List<CategoryResponse>> GetAllCategoriesAsync();
+
+        // Lấy chi tiết 1 danh mục
         Task<CategoryResponse> GetCategoryByIdAsync(int id);
-        Task<bool> CreateCategoryAsync(CreateCategoryRequest request);
-        Task<bool> UpdateCategoryAsync(int id, UpdateCategoryRequest request);
-        Task<string> DeleteCategoryAsync(int id); // Trả về string để báo lỗi chi tiết
+
+        // Tạo mới danh mục
+        Task<CategoryResponse> CreateCategoryAsync(CreateCategoryRequest request);
+
+        // Cập nhật danh mục
+        Task<CategoryResponse> UpdateCategoryAsync(int id, UpdateCategoryRequest request);
+
+        // Xóa danh mục
+        Task<bool> DeleteCategoryAsync(int id);
     }
 }

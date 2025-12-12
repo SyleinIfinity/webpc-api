@@ -1,19 +1,22 @@
 ﻿using WEBPC_API.Models.Entities;
 
-namespace WEBPC_API.Models.Interfaces
+namespace WEBPC_API.Repositories.Interfaces
 {
     public interface IDanhMucRepository
     {
-        Task<IEnumerable<DanhMuc>> GetAllAsync();
-        Task<DanhMuc> GetByIdAsync(int id);
-        Task<int> AddAsync(DanhMuc danhMuc);
-        Task UpdateAsync(DanhMuc danhMuc);
+        // Lấy tất cả danh mục (bao gồm thông tin cha - con)
+        Task<List<DanhMuc>> GetAllAsync();
+
+        // Lấy danh mục theo ID
+        Task<DanhMuc?> GetByIdAsync(int id);
+
+        // Tạo mới
+        Task<DanhMuc> CreateAsync(DanhMuc danhMuc);
+
+        // Cập nhật
+        Task<DanhMuc> UpdateAsync(DanhMuc danhMuc);
+
+        // Xóa
         Task DeleteAsync(int id);
-
-        // Hàm kiểm tra trùng tên danh mục
-        Task<bool> IsNameExistsAsync(string name);
-
-        // Hàm kiểm tra xem danh mục có chứa sản phẩm không (để chặn xóa)
-        Task<bool> HasProductsAsync(int id);
     }
 }
