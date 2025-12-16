@@ -135,5 +135,24 @@ namespace WEBPC_API.Services.Business
             // C. Lưu tất cả thay đổi vào Database một lần cuối
             await _context.SaveChangesAsync();
         }
+
+        // Thêm method này vào cuối class PaymentService
+        public async Task<string> GetTransactionStatus(int maDonHang)
+        {
+            // Kiểm tra trạng thái trong bảng GiaoDichThanhToan
+            var giaoDich = await _context.GiaoDichThanhToan
+                .Where(x => x.maDonHang == maDonHang)
+                .OrderByDescending(x => x.ngayTao)
+                .FirstOrDefaultAsync();
+
+            // Nếu tìm thấy giao dịch thành công -> Trả về "PAID"
+            if (giaoDich != null && giaoDich.trangThai == "Success")
+            {
+                return "PAID";
+            }
+
+            // Ngược lại -> "PENDING"
+            return "PENDING";
+        }
     }
 }

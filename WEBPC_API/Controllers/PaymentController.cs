@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WEBPC_API.Models.DTOs.Casso;
 using WEBPC_API.Services.Interfaces;
 
@@ -75,6 +76,28 @@ namespace WEBPC_API.Controllers
                 // Vẫn trả về success để Casso không retry (tránh spam server khi gặp lỗi logic nội bộ)
                 // Nhưng thực tế là xử lý thất bại
                 return Ok(new { error = 0, message = "success" });
+            }
+        }
+
+        // API: GET /api/payment/check-status/{maDonHang}
+        [HttpGet("check-status/{maDonHang}")]
+        public async Task<IActionResult> CheckPaymentStatus(int maDonHang)
+        {
+            try
+            {
+                // Gọi qua Service thay vì gọi trực tiếp _context
+                string status = await _paymentService.GetTransactionStatus(maDonHang);
+
+                if (status == "PAID")
+                {
+                    return Ok(new { status = "PAID", message = "Thanh toán thành công" });
+                }
+
+                return Ok(new { status = "PENDING", message = "Chờ thanh toán" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

@@ -10,5 +10,7 @@ namespace WEBPC_API.Services.Interfaces
 
         // 2. Hàm xử lý khi Casso báo có tiền về (Webhook)
         Task ProcessCassoWebhook(CassoWebhookData webhookData, string secureToken);
+
+        Task<string> GetTransactionStatus(int maDonHang);
     }
 }
