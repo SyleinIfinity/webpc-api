@@ -14,6 +14,7 @@ namespace WEBPC_API.Services.Business
     public class CassoSettings
     {
         public string ApiKey { get; set; }
+        public string WebhookSecret { get; set; }
     }
 
     public class PaymentService : IPaymentService
@@ -74,11 +75,11 @@ namespace WEBPC_API.Services.Business
         // --- PHẦN 2 & 4: XỬ LÝ WEBHOOK (AUTO BANKING) CÓ CONCURRENCY ---
         public async Task ProcessCassoWebhook(CassoWebhookData webhookData, string secureToken)
         {
-            // Check bảo mật Token
-            if (secureToken != _cassoSettings.ApiKey)
+            if (secureToken != _cassoSettings.WebhookSecret)
             {
-                throw new UnauthorizedAccessException("Casso Secure Token không hợp lệ!");
+                throw new UnauthorizedAccessException("Webhook secret không hợp lệ");
             }
+
 
             if (webhookData.data == null) return;
 
@@ -98,6 +99,9 @@ namespace WEBPC_API.Services.Business
                 }
 
                 // Regex tìm mã đơn hàng
+                if (string.IsNullOrWhiteSpace(trans.description))
+                    continue;
+
                 var match = Regex.Match(trans.description, @"DH\s+([A-Za-z0-9_-]+)", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
@@ -126,7 +130,7 @@ namespace WEBPC_API.Services.Business
 
 
                             // Kiểm tra số tiền
-                            if (trans.amount >= order.tongTien)
+                            if (trans.amount >= order.tongTien && trans.amount <= order.tongTien + 1000)
                             {
                                 // 1. Cập nhật trạng thái đơn hàng -> DaThanhToan (Enum)
                                 order.trangThai = TrangThaiDonHang.DaThanhToan.ToString();
