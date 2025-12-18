@@ -85,6 +85,7 @@ namespace WEBPC_API.Repositories.Implements
                 .Include(d => d.ChiTietDonHangs)
                     .ThenInclude(ct => ct.SanPham)
                         .ThenInclude(sp => sp.HinhAnhs)
+                .Include(d => d.GiaoDichThanhToans)
                 .FirstOrDefaultAsync(d => d.maDonHang == id);
         }
 
