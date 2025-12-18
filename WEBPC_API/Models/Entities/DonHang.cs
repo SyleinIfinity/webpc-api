@@ -48,5 +48,6 @@ namespace WEBPC_API.Models.Entities
         public decimal phiVanChuyen { get; set; } = 0;
 
         public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; }
+        public virtual ICollection<GiaoDichThanhToan> GiaoDichThanhToans { get; set; }
     }
 }

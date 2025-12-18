@@ -73,6 +73,7 @@ namespace WEBPC_API.Repositories.Implements
                 .Include(d => d.ChiTietDonHangs)
                     .ThenInclude(ct => ct.SanPham)
                         .ThenInclude(sp => sp.HinhAnhs) // Lấy ảnh để hiển thị
+                .Include(d => d.GiaoDichThanhToans)
                 .OrderByDescending(d => d.ngayDat) // Đơn mới nhất lên đầu
                 .ToListAsync();
         }
@@ -94,6 +95,7 @@ namespace WEBPC_API.Repositories.Implements
                 .Include(d => d.ChiTietDonHangs)
                     .ThenInclude(ct => ct.SanPham)
                         .ThenInclude(sp => sp.HinhAnhs)
+                .Include(d => d.GiaoDichThanhToans)
                 .Where(d => d.maKhachHang == maKhachHang)
                 .OrderByDescending(d => d.ngayDat)
                 .ToListAsync();

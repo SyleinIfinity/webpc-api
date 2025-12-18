@@ -184,7 +184,16 @@ namespace WEBPC_API.Services.Business
                     SoLuong = ct.soLuong,
                     DonGiaLucMua = ct.donGiaLucMua,
                     ThanhTien = ct.thanhTien
-                }).ToList() ?? new List<ChiTietDonHangResponse>()
+                }).ToList() ?? new List<ChiTietDonHangResponse>(),
+
+                GiaoDichs = donHang.GiaoDichThanhToans?.Select(gd => new GiaoDichResponse
+                {
+                    MaGiaoDich = gd.maGiaoDich,
+                    NgayGiaoDich = gd.ngayTao,
+                    SoTien = gd.soTien,
+                    TrangThai = gd.trangThai,
+                    PhuongThuc = gd.phuongThuc
+                }).ToList() ?? new List<GiaoDichResponse>() // Handle null
             };
         }
 

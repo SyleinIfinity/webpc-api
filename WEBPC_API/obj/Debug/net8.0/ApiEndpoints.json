@@ -731,7 +731,7 @@
   {
     "ContainingType": "WEBPC_API.Controllers.PaymentController",
     "Method": "HandleCassoWebhook",
-    "RelativePath": "api/Payment/webhook-casso",
+    "RelativePath": "api/Payment/webhook",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

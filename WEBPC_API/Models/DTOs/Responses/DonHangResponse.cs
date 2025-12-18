@@ -22,6 +22,8 @@
 
         // Danh sách sản phẩm
         public List<ChiTietDonHangResponse> ChiTiet { get; set; }
+
+        public List<GiaoDichResponse> GiaoDichs { get; set; }
     }
 
     public class ChiTietDonHangResponse
@@ -32,5 +34,14 @@
         public int SoLuong { get; set; }
         public decimal DonGiaLucMua { get; set; }
         public decimal ThanhTien { get; set; }
+    }
+
+    public class GiaoDichResponse
+    {
+        public int MaGiaoDich { get; set; }
+        public DateTime NgayGiaoDich { get; set; }
+        public decimal SoTien { get; set; }
+        public string TrangThai { get; set; } // PENDING, PAID...
+        public string PhuongThuc { get; set; }
     }
 }

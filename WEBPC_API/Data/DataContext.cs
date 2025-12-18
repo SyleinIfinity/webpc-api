@@ -285,7 +285,7 @@ namespace WEBPC_API.Data
                 // Quan hệ: DonHang (1) -> GiaoDichThanhToan (N)
                 // Một đơn hàng có thể có nhiều lần thanh toán (VD: thanh toán lỗi -> thanh toán lại)
                 entity.HasOne(d => d.DonHang)
-                      .WithMany()
+                      .WithMany(d => d.GiaoDichThanhToans)
                       .HasForeignKey(d => d.maDonHang)
                       .OnDelete(DeleteBehavior.Cascade); // Xóa đơn hàng -> Xóa lịch sử giao dịch
             });

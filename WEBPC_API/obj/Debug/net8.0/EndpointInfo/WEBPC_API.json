@@ -1167,7 +1167,7 @@
         }
       }
     },
-    "/api/Payment/webhook-casso": {
+    "/api/Payment/webhook": {
       "post": {
         "tags": [
           "Payment"
@@ -2219,7 +2219,8 @@
             "format": "double"
           },
           "cusum_balance": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "when": {
