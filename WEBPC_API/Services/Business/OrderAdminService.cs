@@ -3,26 +3,24 @@ using WEBPC_API.Repositories.Interfaces;
 using WEBPC_API.Services.Interfaces;
 using WEBPC_API.Models.DTOs.Requests;
 using WEBPC_API.Models.DTOs.Responses;
+using WEBPC_API.Models.Entities;
 
 namespace WEBPC_API.Services.Business
 {
     public class OrderAdminService : IOrderAdminService
     {
         private readonly IDonHangRepository _donHangRepo;
-        private readonly INhatKyHoatDongRepository _logRepo; // 1. Khai báo thêm Repository ghi log
-        private readonly IMailService _mailService; // Service có sẵn của em
-        private readonly IConfiguration _config;    // Để đọc appsettings
-        private readonly IKhachHangRepository _khachHangRepo; // Để lấy mail khách
+        private readonly INhatKyHoatDongRepository _logRepo;
+        private readonly IMailService _mailService;
+        private readonly IConfiguration _config;
+        private readonly IKhachHangRepository _khachHangRepo;
 
-
-
-        // 2. Inject vào Constructor (Thêm tham số logRepo vào đây)
         public OrderAdminService(
                     IDonHangRepository donHangRepo,
                     INhatKyHoatDongRepository logRepo,
-                    IMailService mailService,       // <--- Thêm
-                    IConfiguration config,          // <--- Thêm
-                    IKhachHangRepository khachHangRepo // <--- Thêm
+                    IMailService mailService,
+                    IConfiguration config,
+                    IKhachHangRepository khachHangRepo
                 )
         {
             _donHangRepo = donHangRepo;
@@ -32,74 +30,103 @@ namespace WEBPC_API.Services.Business
             _khachHangRepo = khachHangRepo;
         }
 
-        // --- HÀM 1: TỪ CHỐI ĐƠN HÀNG (Giữ nguyên logic cũ) ---
-        public async Task<OrderProcessResponse> RejectOrderAsync(int orderId, RejectOrderRequest request, int nhanVienId)
+        // --- 1. LẤY DANH SÁCH ĐƠN HÀNG ---
+        public async Task<List<DonHang>> GetAllOrdersAsync()
+        {
+            // Yêu cầu Repository phải có hàm GetAllAsync (đã làm ở bước trước)
+            return await _donHangRepo.GetAllAsync();
+        }
+
+        // --- 2. DUYỆT ĐƠN HÀNG ---
+        public async Task<OrderProcessResponse> ApproveOrderAsync(int orderId, int staffId)
         {
             var donHang = await _donHangRepo.GetByIdAsync(orderId);
             if (donHang == null) return new OrderProcessResponse { Success = false, Message = "Không tìm thấy đơn hàng." };
 
-            // ... (Giữ nguyên logic kiểm tra trạng thái cũ) ...
+            // [SỬA]: Check ChoXacNhan
+            if (donHang.trangThai != TrangThaiDonHang.ChoXacNhan.ToString())
+            {
+                return new OrderProcessResponse { Success = false, Message = $"Đơn hàng đang ở trạng thái {donHang.trangThai}, không thể duyệt." };
+            }
+
+            // [SỬA]: Update DangGiao
+            donHang.trangThai = TrangThaiDonHang.DangGiao.ToString();
+            donHang.maNhanVienDuyet = staffId;
+
+            await _donHangRepo.UpdateAsync(donHang);
+            await _logRepo.AddLogAsync(new NhatKyHoatDong
+            {
+                MaNhanVien = staffId,
+                HanhDong = $"Duyệt đơn {donHang.maCodeDonHang}",
+                ThoiGian = DateTime.Now
+            });
+
+            // Gửi mail báo khách (nếu cần)
+            await GuiMailThongBaoAsync(donHang, "Đơn hàng của bạn đã được duyệt và đang được giao.");
+
+            return new OrderProcessResponse { Success = true, Message = "Duyệt đơn hàng thành công." };
+        }
+
+        // --- 3. TỪ CHỐI / HỦY ĐƠN HÀNG ---
+        public async Task<OrderProcessResponse> RejectOrderAsync(RejectOrderRequest request, int nhanVienId)
+        {
+            // Lấy ID từ Request DTO (Vì Controller đã gán vào rồi)
+            int orderId = request.OrderId;
+
+            var donHang = await _donHangRepo.GetByIdAsync(orderId);
+            if (donHang == null) return new OrderProcessResponse { Success = false, Message = "Không tìm thấy đơn hàng." };
+
+            // [SỬA]: Check HoanThanh hoặc Huy
             if (donHang.trangThai == TrangThaiDonHang.HoanThanh.ToString() ||
-               donHang.trangThai == TrangThaiDonHang.Huy.ToString())
+                donHang.trangThai == TrangThaiDonHang.Huy.ToString())
             {
                 return new OrderProcessResponse { Success = false, Message = "Đơn hàng đã hoàn tất hoặc đã hủy." };
             }
 
             var giaoDich = await _donHangRepo.GetTransactionByOrderIdAsync(orderId);
+            bool isPaid = false;
+
+            // [SỬA]: Check Success và DaThanhToan
+            if (giaoDich != null && giaoDich.trangThai == TrangThaiThanhToan.Success.ToString()) isPaid = true;
+            if (donHang.trangThai == TrangThaiDonHang.DaThanhToan.ToString()) isPaid = true;
+
             string trangThaiMoi = "";
             string message = "";
 
-            bool isPaid = giaoDich != null && giaoDich.trangThai == TrangThaiThanhToan.Success.ToString();
-
             if (!isPaid)
             {
-                trangThaiMoi = TrangThaiDonHang.Huy.ToString();
+                trangThaiMoi = TrangThaiDonHang.Huy.ToString(); // [SỬA]
                 message = "Đơn chưa thanh toán. Đã hủy thành công.";
             }
             else
             {
-                trangThaiMoi = TrangThaiDonHang.ChoHoanTien.ToString();
-                message = "Đơn đã thanh toán. Đã chuyển hồ sơ sang Admin chờ hoàn tiền.";
+                trangThaiMoi = TrangThaiDonHang.ChoHoanTien.ToString(); // [SỬA]
+                message = "Đơn đã thanh toán. Đã chuyển hồ sơ sang chờ hoàn tiền.";
             }
 
             donHang.trangThai = trangThaiMoi;
             donHang.maNhanVienDuyet = nhanVienId;
+            // donHang.GhiChu = request.LyDoTuChoi; // Nếu có trường ghi chú
 
             await _donHangRepo.UpdateAsync(donHang);
-            await _donHangRepo.SaveChangesAsync();
 
-            // ==========================================================
-            // LOGIC GỬI MAIL CHO ADMIN (NẾU CẦN HOÀN TIỀN)
-            // ==========================================================
-            if (trangThaiMoi == TrangThaiDonHang.ChoHoanTien.ToString())
+            await _logRepo.AddLogAsync(new NhatKyHoatDong
             {
-                try
-                {
-                    string adminEmail = _config["AdminEmail"]; // Lấy email từ appsettings
-                    if (!string.IsNullOrEmpty(adminEmail))
-                    {
-                        string subject = $"[KHẨN] Yêu cầu hoàn tiền - Đơn hàng {donHang.maCodeDonHang}";
-                        string content = $@"
-                            <h3>Hệ thống có đơn hàng cần hoàn tiền gấp!</h3>
-                            <p><b>Mã đơn:</b> {donHang.maCodeDonHang}</p>
-                            <p><b>Số tiền khách đã trả:</b> {giaoDich.soTien:N0} VNĐ</p>
-                            <p><b>Lý do hủy:</b> {request.LyDoTuChoi}</p>
-                            <p><b>Nhân viên xử lý:</b> ID {nhanVienId}</p>
-                            <hr/>
-                            <p>Vui lòng đăng nhập Admin để thực hiện hoàn tiền (Refund).</p>
-                        ";
+                MaNhanVien = nhanVienId,
+                HanhDong = $"Hủy đơn {donHang.maCodeDonHang}. Lý do: {request.LyDoTuChoi}",
+                ThoiGian = DateTime.Now
+            });
 
-                        // Gọi MailService có sẵn của em
-                        await _mailService.SendEmailAsync(adminEmail, subject, content);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Ghi log lỗi mail nhưng không chặn quy trình chính
-                    Console.WriteLine($"Lỗi gửi mail Admin: {ex.Message}");
-                }
+            // Gửi mail cho Admin nếu cần hoàn tiền
+            if (trangThaiMoi == "ChoHoanTien")
+            {
+                await GuiMailBaoAdminRefund(donHang, request.LyDoTuChoi, giaoDich?.soTien ?? 0);
             }
-            // ==========================================================
+            else
+            {
+                // Gửi mail báo khách là đơn đã hủy
+                await GuiMailThongBaoAsync(donHang, $"Đơn hàng đã bị hủy. Lý do: {request.LyDoTuChoi}");
+            }
 
             return new OrderProcessResponse
             {
@@ -110,73 +137,75 @@ namespace WEBPC_API.Services.Business
             };
         }
 
-        // --- HÀM 2: XÁC NHẬN HOÀN TIỀN (SỬA ĐOẠN NÀY) ---
-        // --- HÀM 2: XÁC NHẬN HOÀN TIỀN ---
+        // --- 4. XÁC NHẬN HOÀN TIỀN (REFUND) ---
         public async Task<OrderProcessResponse> ConfirmRefundAsync(int orderId, int adminId)
         {
             var donHang = await _donHangRepo.GetByIdAsync(orderId);
-            // ... (Giữ nguyên logic kiểm tra đơn hàng cũ) ...
             if (donHang == null) return new OrderProcessResponse { Success = false, Message = "Không tìm thấy đơn hàng." };
 
+            // [SỬA]: Check ChoHoanTien
             if (donHang.trangThai != TrangThaiDonHang.ChoHoanTien.ToString())
             {
                 return new OrderProcessResponse { Success = false, Message = "Đơn hàng không ở trạng thái chờ hoàn tiền." };
             }
 
             var giaoDich = await _donHangRepo.GetTransactionByOrderIdAsync(orderId);
-            if (giaoDich == null) return new OrderProcessResponse { Success = false, Message = "Không tìm thấy giao dịch gốc." };
+            if (giaoDich != null)
+            {
+                giaoDich.trangThai = TrangThaiThanhToan.Refunded.ToString(); // [SỬA] -> Đánh dấu đã hoàn tiền
+            }
 
-
-            // Xử lý hoàn tiền
-            giaoDich.trangThai = TrangThaiThanhToan.Refunded.ToString();
-            donHang.trangThai = TrangThaiDonHang.Huy.ToString();
+            donHang.trangThai = TrangThaiDonHang.Huy.ToString(); // [SỬA] -> Về Hủy hoàn toàn
             donHang.maNhanVienDuyet = adminId;
 
             await _donHangRepo.UpdateAsync(donHang);
-            await _donHangRepo.SaveChangesAsync();
 
-            // Ghi log hệ thống (Code cũ em đã làm)
-            await _logRepo.AddLogAsync("REFUND_CONFIRM",
-                $"Admin {adminId} hoàn tiền đơn {donHang.maCodeDonHang}. Số tiền: {giaoDich.soTien}", adminId);
-
-            // ==========================================================
-            // LOGIC GỬI MAIL THÔNG BÁO CHO KHÁCH HÀNG
-            // ==========================================================
-            try
+            await _logRepo.AddLogAsync(new NhatKyHoatDong
             {
-                // 1. Lấy thông tin khách hàng để có Email
-                var khachHang = await _khachHangRepo.GetByIdAsync(donHang.maKhachHang);
+                MaNhanVien = adminId,
+                HanhDong = $"Xác nhận hoàn tiền đơn {donHang.maCodeDonHang}",
+                ThoiGian = DateTime.Now
+            });
 
-                // (Nếu repository của em chưa có hàm GetByIdAsync, em có thể dùng _context.KhachHangs.Find... 
-                // nhưng tốt nhất dùng Repo như Clean Architecture)
-
-                if (khachHang != null && !string.IsNullOrEmpty(khachHang.Email))
-                {
-                    string subject = $"Xác nhận hoàn tiền thành công - Đơn hàng {donHang.maCodeDonHang}";
-                    string content = $@"
-                        <h3>Xin chào {khachHang.HoTen},</h3>
-                        <p>Yêu cầu hoàn tiền cho đơn hàng <b>{donHang.maCodeDonHang}</b> đã được duyệt.</p>
-                        <p>Số tiền: <b style='color:red'>{giaoDich.soTien:N0} VNĐ</b></p>
-                        <p>Tiền sẽ được chuyển lại vào tài khoản của bạn trong 24h.</p>
-                        <p>Cảm ơn bạn đã sử dụng dịch vụ WEBPC.</p>
-                    ";
-
-                    await _mailService.SendEmailAsync(khachHang.Email, subject, content);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi gửi mail Khách: {ex.Message}");
-            }
-            // ==========================================================
+            // Gửi mail báo khách tiền đã về
+            await GuiMailThongBaoAsync(donHang, "Yêu cầu hoàn tiền của bạn đã được xử lý thành công.");
 
             return new OrderProcessResponse
             {
                 Success = true,
-                Message = "Đã hoàn tiền và gửi mail thông báo.",
+                Message = "Đã xác nhận hoàn tiền thành công.",
                 MaDonHang = donHang.maDonHang,
-                TrangThaiMoi = TrangThaiDonHang.Huy.ToString()
+                TrangThaiMoi = "Huy"
             };
+        }
+
+        // --- CÁC HÀM PHỤ (HELPER) ---
+
+        private async Task GuiMailThongBaoAsync(DonHang donHang, string noiDung)
+        {
+            try
+            {
+                var khach = await _khachHangRepo.GetByIdAsync(donHang.maKhachHang);
+                if (khach != null && !string.IsNullOrEmpty(khach.Email))
+                {
+                    await _mailService.SendEmailAsync(khach.Email, $"Thông báo đơn hàng {donHang.maCodeDonHang}", noiDung);
+                }
+            }
+            catch { }
+        }
+
+        private async Task GuiMailBaoAdminRefund(DonHang donHang, string lyDo, decimal soTien)
+        {
+            try
+            {
+                string adminEmail = _config["AdminEmail"];
+                if (!string.IsNullOrEmpty(adminEmail))
+                {
+                    string content = $"Đơn {donHang.maCodeDonHang} cần hoàn {soTien:N0}đ. Lý do hủy: {lyDo}";
+                    await _mailService.SendEmailAsync(adminEmail, "[URGENT] Yêu cầu hoàn tiền", content);
+                }
+            }
+            catch { }
         }
     }
 }

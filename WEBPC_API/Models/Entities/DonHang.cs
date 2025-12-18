@@ -11,7 +11,7 @@ namespace WEBPC_API.Models.Entities
 
         [Required]
         [StringLength(50)]
-        public string maCodeDonHang { get; set; } // Mã đơn hàng (VD: DH8372)
+        public string maCodeDonHang { get; set; }
 
         public int maKhachHang { get; set; }
         [ForeignKey("maKhachHang")]
@@ -27,7 +27,11 @@ namespace WEBPC_API.Models.Entities
 
         [StringLength(50)]
         public string trangThai { get; set; } = "ChoXacNhan";
-        // Các trạng thái: ChoXacNhan, ChoThanhToan, DaThanhToan, DangGiao, HoanThanh, Huy
+
+        // [MỚI] Bổ sung phương thức thanh toán
+        [Required]
+        [StringLength(50)]
+        public string phuongThucThanhToan { get; set; } // Giá trị: "COD" hoặc "VietQR"
 
         [Required]
         [StringLength(255)]
@@ -43,7 +47,6 @@ namespace WEBPC_API.Models.Entities
 
         public decimal phiVanChuyen { get; set; } = 0;
 
-        // Navigation Property: Một đơn hàng có nhiều chi tiết
         public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; }
     }
 }

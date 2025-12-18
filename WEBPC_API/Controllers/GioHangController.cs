@@ -94,5 +94,24 @@ namespace WEBPC_API.Controllers
                 return Ok(new { message = "Đã xóa toàn bộ giỏ hàng" });
             return BadRequest(new { message = "Lỗi khi xóa giỏ hàng" });
         }
+
+        [HttpPost("get-details")]
+        public async Task<IActionResult> GetSelectedDetails([FromBody] GetSelectedCartItemsRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _service.GetSelectedItemsDetailAsync(request);
+
+                // Trả về kết quả: Bao gồm danh sách chi tiết và Tổng tiền của các món đã chọn
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

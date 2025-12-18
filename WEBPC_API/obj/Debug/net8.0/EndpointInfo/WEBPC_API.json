@@ -130,17 +130,7 @@
         }
       }
     },
-    "/api/DonHang": {
-      "get": {
-        "tags": [
-          "DonHang"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/api/DonHang/create": {
       "post": {
         "tags": [
           "DonHang"
@@ -171,6 +161,18 @@
         }
       }
     },
+    "/api/DonHang": {
+      "get": {
+        "tags": [
+          "DonHang"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DonHang/{id}": {
       "get": {
         "tags": [
@@ -194,14 +196,14 @@
         }
       }
     },
-    "/api/DonHang/history/{maKhachHang}": {
+    "/api/DonHang/customer/{customerId}": {
       "get": {
         "tags": [
           "DonHang"
         ],
         "parameters": [
           {
-            "name": "maKhachHang",
+            "name": "customerId",
             "in": "path",
             "required": true,
             "schema": {
@@ -210,6 +212,48 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DonHang/cancel/{id}": {
+      "put": {
+        "tags": [
+          "DonHang"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -348,6 +392,37 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GioHang/get-details": {
+      "post": {
+        "tags": [
+          "GioHang"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetSelectedCartItemsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetSelectedCartItemsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetSelectedCartItemsRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -907,7 +982,42 @@
         }
       }
     },
-    "/api/admin/orders/reject/{id}": {
+    "/api/order-admin/list": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/order-admin/approve/{id}": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/order-admin/reject/{id}": {
       "post": {
         "tags": [
           "OrderAdmin"
@@ -949,7 +1059,7 @@
         }
       }
     },
-    "/api/admin/orders/refund-confirm/{id}": {
+    "/api/order-admin/confirm-refund/{id}": {
       "post": {
         "tags": [
           "OrderAdmin"
@@ -1081,6 +1191,29 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Payment/check-status/{maDonHang}": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "parameters": [
+          {
+            "name": "maDonHang",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -2049,6 +2182,23 @@
         },
         "additionalProperties": false
       },
+      "CancelOrderRequest": {
+        "required": [
+          "maKhachHang"
+        ],
+        "type": "object",
+        "properties": {
+          "maKhachHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lyDoHuy": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CassoTransaction": {
         "type": "object",
         "properties": {
@@ -2297,6 +2447,27 @@
         },
         "additionalProperties": false
       },
+      "GetSelectedCartItemsRequest": {
+        "required": [
+          "maKhachHang",
+          "selectedCartItemIds"
+        ],
+        "type": "object",
+        "properties": {
+          "maKhachHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "selectedCartItemIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "KhachHangRequest": {
         "type": "object",
         "properties": {
@@ -2374,6 +2545,10 @@
       "RejectOrderRequest": {
         "type": "object",
         "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "lyDoTuChoi": {
             "type": "string",
             "nullable": true
@@ -2396,15 +2571,38 @@
         "additionalProperties": false
       },
       "TaoDonHangRequest": {
+        "required": [
+          "phuongThucThanhToan"
+        ],
         "type": "object",
         "properties": {
           "maKhachHang": {
             "type": "integer",
             "format": "int32"
           },
-          "tongTien": {
-            "type": "number",
-            "format": "double"
+          "nguoiNhan": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "diaChiGiaoHang": {
+            "type": "string",
+            "nullable": true
+          },
+          "phuongThucThanhToan": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "selectedCartItemIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

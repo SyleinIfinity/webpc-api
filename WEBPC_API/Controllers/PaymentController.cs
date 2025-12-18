@@ -47,7 +47,7 @@ namespace WEBPC_API.Controllers
         // URL: POST /api/payment/webhook-casso
         // Lưu ý: API này không dành cho Frontend gọi, mà dành cho Server của Casso gọi
         // =================================================================================
-        [HttpPost("webhook-casso")]
+        [HttpPost("webhook")]
         public async Task<IActionResult> HandleCassoWebhook([FromBody] CassoWebhookData data)
         {
             try
@@ -85,15 +85,26 @@ namespace WEBPC_API.Controllers
         {
             try
             {
-                // Gọi qua Service thay vì gọi trực tiếp _context
                 string status = await _paymentService.GetTransactionStatus(maDonHang);
 
                 if (status == "PAID")
                 {
-                    return Ok(new { status = "PAID", message = "Thanh toán thành công" });
+                    // Trả về 200 OK kèm tín hiệu để Frontend chuyển trang
+                    return Ok(new
+                    {
+                        status = "PAID",
+                        message = "Thanh toán thành công",
+                        shouldRedirect = true
+                    });
                 }
 
-                return Ok(new { status = "PENDING", message = "Chờ thanh toán" });
+                // Vẫn trả về 200 (không phải lỗi) nhưng status là PENDING
+                return Ok(new
+                {
+                    status = "PENDING",
+                    message = "Đang chờ thanh toán...",
+                    shouldRedirect = false
+                });
             }
             catch (Exception ex)
             {

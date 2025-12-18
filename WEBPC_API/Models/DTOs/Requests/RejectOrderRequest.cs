@@ -2,6 +2,7 @@
 {
     public class RejectOrderRequest
     {
-        public string LyDoTuChoi { get; set; } // Nhân viên cần nhập lý do hủy
+        public int OrderId { get; set; } // Thêm dòng này để khớp với Service
+        public string LyDoTuChoi { get; set; } // Giữ nguyên tên này
     }
 }

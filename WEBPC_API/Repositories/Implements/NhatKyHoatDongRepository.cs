@@ -1,4 +1,5 @@
-﻿using WEBPC_API.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WEBPC_API.Data;
 using WEBPC_API.Models.Entities;
 using WEBPC_API.Repositories.Interfaces;
 
@@ -13,17 +14,13 @@ namespace WEBPC_API.Repositories.Implements
             _context = context;
         }
 
-        public async Task AddLogAsync(string hanhDong, string moTa, int? maNhanVien)
+        // Đây là hàm em bị thiếu dẫn đến lỗi build
+        public async Task AddLogAsync(NhatKyHoatDong log)
         {
-            var log = new NhatKyHoatDong
-            {
-                HanhDong = hanhDong,
-                MoTa = moTa,
-                MaNhanVien = maNhanVien,
-                ThoiGian = DateTime.Now
-            };
+            // Thêm log vào DbSet
+            await _context.NhatKyHoatDong.AddAsync(log);
 
-            _context.NhatKyHoatDong.Add(log);
+            // Lưu thay đổi xuống Database
             await _context.SaveChangesAsync();
         }
     }

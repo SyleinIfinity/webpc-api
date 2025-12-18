@@ -10,5 +10,7 @@ namespace WEBPC_API.Services.Interfaces
         Task<GioHangResponse> UpdateCartItemAsync(UpdateCartItemRequest request);
         Task<GioHangResponse> RemoveFromCartAsync(int maKhachHang, int maSanPham);
         Task<bool> ClearCartAsync(int maKhachHang);
+
+        Task<GioHangResponse> GetSelectedItemsDetailAsync(GetSelectedCartItemsRequest request);
     }
 }

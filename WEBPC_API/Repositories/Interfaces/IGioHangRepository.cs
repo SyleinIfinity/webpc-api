@@ -20,5 +20,10 @@ namespace WEBPC_API.Repositories.Interfaces
         Task ClearCartAsync(int maGioHang);
 
         Task SaveChangesAsync();
+
+        // Thêm dòng này vào Interface
+        Task RemoveCartItemsAsync(int maGioHang, List<int> cartItemIds);
+
+        Task<List<ChiTietGioHang>> GetSelectedItemsAsync(int maGioHang, List<int> listChiTietId);
     }
 }

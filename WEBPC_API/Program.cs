@@ -12,6 +12,7 @@ using WEBPC_API.Repositories.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using WEBPC_API.Services.Background;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,9 +121,13 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 // Đăng ký Repository Đơn Hàng
 builder.Services.AddScoped<IDonHangRepository, DonHangRepository>();
+builder.Services.AddScoped<IDonHangService, DonHangService>();
+
 // Đăng ký Service Admin Order
 builder.Services.AddScoped<IOrderAdminService, OrderAdminService>();
 builder.Services.AddScoped<INhatKyHoatDongRepository, NhatKyHoatDongRepository>();
+
+builder.Services.AddHostedService<OrderTimeoutWorker>();
 
 
 

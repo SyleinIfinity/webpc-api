@@ -112,42 +112,88 @@ namespace WEBPC_API.Services.Business
         }
 
         // Helper Map Response
-        private GioHangResponse MapToResponse(GioHang gh)
+        // Tìm hàm MapToResponse và sửa lại phần mapping ChiTiet
+        private GioHangResponse MapToResponse(GioHang gioHang)
         {
-            var response = new GioHangResponse
-            {
-                MaGioHang = gh.MaGioHang,
-                MaKhachHang = gh.MaKhachHang,
-                NgayCapNhat = gh.NgayCapNhat,
-                ChiTiet = new List<ChiTietGioHangResponse>()
-            };
+            if (gioHang == null) return null;
 
-            if (gh.ChiTietGioHangs != null)
+            // Tính lại tổng tiền
+            decimal tongTien = 0;
+            int tongSoLuong = 0;
+
+            var listChiTiet = new List<ChiTietGioHangResponse>();
+
+            if (gioHang.ChiTietGioHangs != null)
             {
-                foreach (var item in gh.ChiTietGioHangs)
+                foreach (var item in gioHang.ChiTietGioHangs)
                 {
-                    var sp = item.SanPham;
-                    // Lấy ảnh đại diện hoặc ảnh đầu tiên
-                    string imgUrl = sp?.HinhAnhs?.FirstOrDefault(h => h.LaAnhDaiDien)?.UrlHinhAnh
-                                    ?? sp?.HinhAnhs?.FirstOrDefault()?.UrlHinhAnh
-                                    ?? "no-image.png";
+                    if (item.SanPham == null) continue;
 
-                    response.ChiTiet.Add(new ChiTietGioHangResponse
+                    // Lấy ảnh đại diện
+                    string hinhAnh = "";
+                    if (item.SanPham.HinhAnhs != null && item.SanPham.HinhAnhs.Any())
                     {
+                        var anhDaiDien = item.SanPham.HinhAnhs.FirstOrDefault(x => x.LaAnhDaiDien);
+                        hinhAnh = anhDaiDien != null ? anhDaiDien.UrlHinhAnh : item.SanPham.HinhAnhs.First().UrlHinhAnh;
+                    }
+
+                    // Tính giá
+                    decimal giaHienTai = item.SanPham.GiaKhuyenMai ?? item.SanPham.GiaBan;
+                    decimal thanhTienItem = giaHienTai * item.SoLuong;
+
+                    tongTien += thanhTienItem;
+                    tongSoLuong += item.SoLuong;
+
+                    listChiTiet.Add(new ChiTietGioHangResponse
+                    {
+                        // [MỚI] Map MaChiTietGioHang từ Entity sang Response
+                        MaChiTietGioHang = item.MaChiTietGioHang,
+
                         MaSanPham = item.MaSanPham,
-                        TenSanPham = sp != null ? sp.TenSanPham : "Unknown",
-                        HinhAnh = imgUrl,
-                        DonGia = sp != null ? sp.GiaBan : 0,
-                        GiaKhuyenMai = sp != null ? (sp.GiaKhuyenMai ?? 0) : 0, // Dùng nullable
-                        SoLuong = item.SoLuong
+                        TenSanPham = item.SanPham.TenSanPham,
+                        HinhAnh = hinhAnh,
+                        DonGia = item.SanPham.GiaBan,
+                        GiaKhuyenMai = item.SanPham.GiaKhuyenMai ?? 0,
+                        SoLuong = item.SoLuong,
+                        ThanhTien = thanhTienItem
                     });
                 }
             }
 
-            response.TongSoLuongSanPham = response.ChiTiet.Sum(x => x.SoLuong);
-            response.TongTienHang = response.ChiTiet.Sum(x => x.ThanhTien);
+            return new GioHangResponse
+            {
+                MaGioHang = gioHang.MaGioHang,
+                MaKhachHang = gioHang.MaKhachHang,
+                NgayCapNhat = gioHang.NgayCapNhat,
+                TongTienHang = tongTien,
+                TongSoLuongSanPham = tongSoLuong,
+                ChiTietGioHangs = listChiTiet
+            };
+        }
 
-            return response;
+        public async Task<GioHangResponse> GetSelectedItemsDetailAsync(GetSelectedCartItemsRequest request)
+        {
+            // 1. Lấy thông tin giỏ hàng cơ bản để có MaGioHang
+            var gioHang = await _repo.GetByKhachHangIdAsync(request.MaKhachHang);
+            if (gioHang == null)
+            {
+                throw new Exception("Giỏ hàng không tồn tại.");
+            }
+
+            // 2. Gọi Repo lấy danh sách item chi tiết (đã include Sản phẩm và Ảnh)
+            var selectedItems = await _repo.GetSelectedItemsAsync(gioHang.MaGioHang, request.SelectedCartItemIds);
+
+            // 3. Map sang Response (Tái sử dụng logic Map nhưng chỉ với items đã chọn)
+            // Tạo một object GioHang tạm thời để dùng lại hàm MapToResponse
+            var tempGioHang = new GioHang
+            {
+                MaGioHang = gioHang.MaGioHang,
+                MaKhachHang = gioHang.MaKhachHang,
+                NgayCapNhat = DateTime.Now,
+                ChiTietGioHangs = selectedItems // Chỉ gán những item đã chọn
+            };
+
+            return MapToResponse(tempGioHang);
         }
     }
 }

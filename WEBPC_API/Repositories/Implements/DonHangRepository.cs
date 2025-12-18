@@ -14,56 +14,88 @@ namespace WEBPC_API.Repositories.Implements
             _context = context;
         }
 
+        public async Task<DonHang> AddAsync(DonHang donHang)
+        {
+            // Khi Add donHang, EF Core sẽ tự động Add luôn các ChiTietDonHang bên trong
+            // nhờ cơ chế Navigation Property
+            await _context.DonHang.AddAsync(donHang);
+            await _context.SaveChangesAsync();
+            return donHang;
+        }
+
         public async Task<DonHang?> GetByIdAsync(int id)
         {
             return await _context.DonHang
-                .Include(d => d.ChiTietDonHangs) // Kèm chi tiết để xem cho rõ
+                .Include(d => d.ChiTietDonHangs) // Kèm chi tiết đơn
+                .ThenInclude(ct => ct.SanPham)   // Kèm thông tin sản phẩm
                 .FirstOrDefaultAsync(d => d.maDonHang == id);
         }
 
-        public async Task<GiaoDichThanhToan?> GetTransactionByOrderIdAsync(int orderId)
+        public async Task<DonHang?> GetByCodeAsync(string maCode)
         {
-            return await _context.GiaoDichThanhToan
-                .Where(x => x.maDonHang == orderId)
-                .OrderByDescending(x => x.ngayTao)
-                .FirstOrDefaultAsync();
+            return await _context.DonHang
+                .Include(d => d.ChiTietDonHangs)
+                .FirstOrDefaultAsync(d => d.maCodeDonHang == maCode);
+        }
+
+        public async Task<List<DonHang>> GetByKhachHangIdAsync(int maKhachHang)
+        {
+            return await _context.DonHang
+                .Where(d => d.maKhachHang == maKhachHang)
+                .OrderByDescending(d => d.ngayDat) // Đơn mới nhất lên đầu
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(DonHang donHang)
         {
             _context.DonHang.Update(donHang);
-            await Task.CompletedTask;
-        }
-
-        public async Task SaveChangesAsync()
-        {
             await _context.SaveChangesAsync();
         }
-
-        // --- PHẦN BỔ SUNG ---
-        public async Task<IEnumerable<DonHang>> GetAllAsync()
+        public async Task<List<DonHang>> GetAllAsync()
         {
-            // Lấy danh sách đơn, sắp xếp mới nhất lên đầu
             return await _context.DonHang
-                .Include(d => d.KhachHang) // Kèm thông tin khách
+                .Include(d => d.KhachHang) // Kèm thông tin khách để hiển thị tên
                 .OrderByDescending(d => d.ngayDat)
                 .ToListAsync();
         }
 
-        public async Task<DonHang> AddAsync(DonHang donHang)
+        // Trong DonHangRepository.cs
+        public async Task<GiaoDichThanhToan?> GetTransactionByOrderIdAsync(int orderId)
         {
-            _context.DonHang.Add(donHang);
-            await _context.SaveChangesAsync();
-            return donHang;
+            return await _context.GiaoDichThanhToan
+                .FirstOrDefaultAsync(x => x.maDonHang == orderId);
         }
 
-        public async Task<IEnumerable<DonHang>> GetByKhachHangIdAsync(int maKhachHang)
+        // 1. GET ALL
+        public async Task<List<DonHang>> GetAllOrdersFullAsync()
         {
             return await _context.DonHang
-                .Include(d => d.ChiTietDonHangs) // Kèm chi tiết để hiển thị sản phẩm
-                    .ThenInclude(ct => ct.SanPham) // Kèm tên sản phẩm
-                .Where(d => d.maKhachHang == maKhachHang) // Lọc theo khách
+                .Include(d => d.ChiTietDonHangs)
+                    .ThenInclude(ct => ct.SanPham)
+                        .ThenInclude(sp => sp.HinhAnhs) // Lấy ảnh để hiển thị
                 .OrderByDescending(d => d.ngayDat) // Đơn mới nhất lên đầu
+                .ToListAsync();
+        }
+
+        // 2. GET BY ID
+        public async Task<DonHang?> GetOrderByIdFullAsync(int id)
+        {
+            return await _context.DonHang
+                .Include(d => d.ChiTietDonHangs)
+                    .ThenInclude(ct => ct.SanPham)
+                        .ThenInclude(sp => sp.HinhAnhs)
+                .FirstOrDefaultAsync(d => d.maDonHang == id);
+        }
+
+        // 3. GET BY CUSTOMER ID
+        public async Task<List<DonHang>> GetOrdersByCustomerIdAsync(int maKhachHang)
+        {
+            return await _context.DonHang
+                .Include(d => d.ChiTietDonHangs)
+                    .ThenInclude(ct => ct.SanPham)
+                        .ThenInclude(sp => sp.HinhAnhs)
+                .Where(d => d.maKhachHang == maKhachHang)
+                .OrderByDescending(d => d.ngayDat)
                 .ToListAsync();
         }
     }

@@ -4,15 +4,25 @@ namespace WEBPC_API.Repositories.Interfaces
 {
     public interface IDonHangRepository
     {
+        // Hàm thêm đơn hàng mới
+        Task<DonHang> AddAsync(DonHang donHang);
+
+        // Các hàm lấy dữ liệu
         Task<DonHang?> GetByIdAsync(int id);
-        Task<GiaoDichThanhToan?> GetTransactionByOrderIdAsync(int orderId);
+        Task<DonHang?> GetByCodeAsync(string maCode);
+        Task<List<DonHang>> GetByKhachHangIdAsync(int maKhachHang);
+
         Task UpdateAsync(DonHang donHang);
-        Task SaveChangesAsync();
+        Task<List<DonHang>> GetAllAsync(); // Lấy tất cả
+        Task<GiaoDichThanhToan?> GetTransactionByOrderIdAsync(int orderId);
 
-        // --- BỔ SUNG THÊM 2 HÀM NÀY ---
-        Task<IEnumerable<DonHang>> GetAllAsync(); // Để xem danh sách
-        Task<DonHang> AddAsync(DonHang donHang);  // Để tạo đơn mới
+        // Lấy danh sách tất cả đơn hàng (Kèm chi tiết)
+        Task<List<DonHang>> GetAllOrdersFullAsync();
 
-        Task<IEnumerable<DonHang>> GetByKhachHangIdAsync(int maKhachHang);
+        // Lấy chi tiết 1 đơn hàng theo ID
+        Task<DonHang?> GetOrderByIdFullAsync(int id);
+
+        // Lấy danh sách đơn hàng của 1 khách hàng cụ thể (Thường dùng cho App Khách hàng)
+        Task<List<DonHang>> GetOrdersByCustomerIdAsync(int maKhachHang);
     }
 }

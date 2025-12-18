@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WEBPC_API.Models.Entities;
-using WEBPC_API.Repositories.Interfaces;
+using WEBPC_API.Models.DTOs.Requests;
+using WEBPC_API.Services.Interfaces;
 
 namespace WEBPC_API.Controllers
 {
@@ -8,83 +8,111 @@ namespace WEBPC_API.Controllers
     [ApiController]
     public class DonHangController : ControllerBase
     {
-        private readonly IDonHangRepository _repo;
+        // Inject Service, không Inject Repository trực tiếp
+        private readonly IDonHangService _donHangService;
 
-        public DonHangController(IDonHangRepository repo)
+        public DonHangController(IDonHangService donHangService)
         {
-            _repo = repo;
+            _donHangService = donHangService;
         }
 
-        // 1. GET: api/donhang (Dành cho Nhân viên xem danh sách)
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
+        // POST: api/DonHang/create
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateOrder([FromBody] TaoDonHangRequest request)
         {
-            var list = await _repo.GetAllAsync();
-            return Ok(list);
-        }
-
-        // 2. GET: api/donhang/{id} (Xem chi tiết 1 đơn)
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrderById(int id)
-        {
-            var order = await _repo.GetByIdAsync(id);
-            if (order == null) return NotFound(new { message = "Không tìm thấy đơn hàng" });
-            return Ok(order);
-        }
-
-        // 3. POST: api/donhang (Dành cho Khách hàng tạo đơn - Test nhanh)
-        // Lưu ý: Đây là API tạo đơn đơn giản để em test luồng Payment/Refund
-        [HttpPost]
-        public async Task<IActionResult> CreateOrderTest([FromBody] TaoDonHangRequest request)
-        {
-            // Tạo mã đơn hàng ngẫu nhiên (VD: DH-8392)
-            string maCode = "DH-" + new Random().Next(1000, 9999);
-
-            var donHang = new DonHang
+            if (!ModelState.IsValid)
             {
-                maCodeDonHang = maCode,
-                maKhachHang = request.MaKhachHang,
-                ngayDat = DateTime.Now,
-                tongTien = request.TongTien,
-                trangThai = "ChoXacNhan",
-
-                // Các thông tin giao hàng giả lập (hoặc lấy từ request nếu muốn kỹ)
-                diaChiGiaoHang = "123 Đường Test, Đà Nẵng",
-                soDienThoaiGiao = "0905123456",
-                nguoiNhan = "Khách Test",
-                phiVanChuyen = 0
-            };
-
-            await _repo.AddAsync(donHang);
-
-            return Ok(new
-            {
-                message = "Tạo đơn hàng thành công!",
-                maDonHang = donHang.maDonHang, // ID số (Dùng cho API Refund/Reject)
-                maCode = donHang.maCodeDonHang // Mã Code (Dùng cho Webhook Casso)
-            });
-        }
-
-        [HttpGet("history/{maKhachHang}")]
-        public async Task<IActionResult> GetOrdersByCustomer(int maKhachHang)
-        {
-            var list = await _repo.GetByKhachHangIdAsync(maKhachHang);
-
-            if (list == null || !list.Any())
-            {
-                return Ok(new List<DonHang>()); // Trả về danh sách rỗng thay vì 404
+                return BadRequest(ModelState);
             }
 
-            return Ok(list);
+            try
+            {
+                var newOrder = await _donHangService.CreateOrderAsync(request);
+
+                // Trả về thông tin đơn hàng vừa tạo
+                return Ok(new
+                {
+                    success = true,
+                    message = "Tạo đơn hàng thành công",
+                    maDonHang = newOrder.maDonHang,
+                    maCode = newOrder.maCodeDonHang,
+                    tongTien = newOrder.tongTien
+                });
+            }
+            catch (Exception ex)
+            {
+                // Trả về lỗi (VD: Hết hàng, Giỏ hàng trống...)
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        // [MỚI] GET: api/DonHang (Lấy tất cả - Dành cho Admin)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var result = await _donHangService.GetAllOrdersAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        // [MỚI] GET: api/DonHang/{id} (Lấy chi tiết 1 đơn)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var result = await _donHangService.GetOrderByIdAsync(id);
+                if (result == null)
+                    return NotFound(new { message = "Không tìm thấy đơn hàng" });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        // [MỚI] GET: api/DonHang/customer/{customerId} (Lấy lịch sử đơn của khách)
+        [HttpGet("customer/{customerId}")]
+        public async Task<IActionResult> GetByCustomer(int customerId)
+        {
+            try
+            {
+                var result = await _donHangService.GetOrdersByCustomerAsync(customerId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelOrder(int id, [FromBody] CancelOrderRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                await _donHangService.CancelOrderAsync(id, request);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Hủy đơn hàng thành công."
+                });
+            }
+            catch (Exception ex)
+            {
+                // Trả về lỗi 400 Bad Request nếu vi phạm logic (ví dụ: hủy đơn đã thanh toán)
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
     }
-
-    // Class DTO nhỏ để hứng dữ liệu tạo đơn nhanh
-    public class TaoDonHangRequest
-    {
-        public int MaKhachHang { get; set; }
-        public decimal TongTien { get; set; }
-    }
-
-
 }

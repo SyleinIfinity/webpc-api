@@ -4,6 +4,6 @@ namespace WEBPC_API.Repositories.Interfaces
 {
     public interface INhatKyHoatDongRepository
     {
-        Task AddLogAsync(string hanhDong, string moTa, int? maNhanVien);
+        Task AddLogAsync(NhatKyHoatDong log);
     }
 }

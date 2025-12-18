@@ -1,23 +1,31 @@
-﻿namespace WEBPC_API.Models.DTOs.Responses
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace WEBPC_API.Models.DTOs.Responses
 {
     public class GioHangResponse
     {
         public int MaGioHang { get; set; }
         public int MaKhachHang { get; set; }
         public DateTime NgayCapNhat { get; set; }
-        public decimal TongTienHang { get; set; } // Tổng tiền tạm tính
+        public decimal TongTienHang { get; set; }
         public int TongSoLuongSanPham { get; set; }
-        public List<ChiTietGioHangResponse> ChiTiet { get; set; }
+
+        [JsonProperty("chiTiet")] // Đặt tên json là 'chiTiet' như bạn muốn
+        public List<ChiTietGioHangResponse> ChiTietGioHangs { get; set; }
     }
 
     public class ChiTietGioHangResponse
     {
+        // [MỚI] Thêm trường này để Client dùng làm ID chọn
+        public int MaChiTietGioHang { get; set; }
+
         public int MaSanPham { get; set; }
         public string TenSanPham { get; set; }
-        public string HinhAnh { get; set; } // Ảnh đại diện
+        public string HinhAnh { get; set; }
         public decimal DonGia { get; set; }
-        public decimal GiaKhuyenMai { get; set; } // Nếu có logic khuyến mãi
+        public decimal GiaKhuyenMai { get; set; }
         public int SoLuong { get; set; }
-        public decimal ThanhTien => (GiaKhuyenMai > 0 ? GiaKhuyenMai : DonGia) * SoLuong;
+        public decimal ThanhTien { get; set; }
     }
 }

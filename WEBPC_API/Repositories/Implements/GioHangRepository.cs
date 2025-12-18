@@ -66,5 +66,36 @@ namespace WEBPC_API.Repositories.Implements
         {
             await _context.SaveChangesAsync();
         }
+
+        // Hàm RemoveCartItemsAsync
+        public async Task RemoveCartItemsAsync(int maGioHang, List<int> listChiTietId)
+        {
+            if (listChiTietId == null || !listChiTietId.Any()) return;
+
+            // [SỬA]: Xóa theo MaChiTietGioHang (Đây là Primary Key nên rất chính xác)
+            var itemsToDelete = await _context.ChiTietGioHangs
+                .Where(x => x.MaGioHang == maGioHang && listChiTietId.Contains(x.MaChiTietGioHang))
+                .ToListAsync();
+
+            if (itemsToDelete.Any())
+            {
+                _context.ChiTietGioHangs.RemoveRange(itemsToDelete);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<ChiTietGioHang>> GetSelectedItemsAsync(int maGioHang, List<int> listChiTietId)
+        {
+            if (listChiTietId == null || !listChiTietId.Any())
+            {
+                return new List<ChiTietGioHang>();
+            }
+
+            return await _context.ChiTietGioHangs
+                .Include(ct => ct.SanPham)
+                    .ThenInclude(sp => sp.HinhAnhs) // Include ảnh để hiển thị đẹp
+                .Where(x => x.MaGioHang == maGioHang && listChiTietId.Contains(x.MaChiTietGioHang))
+                .ToListAsync();
+        }
     }
 }

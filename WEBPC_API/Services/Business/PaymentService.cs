@@ -5,11 +5,12 @@ using WEBPC_API.Helpers;
 using WEBPC_API.Models.DTOs.Casso;
 using WEBPC_API.Models.Entities;
 using WEBPC_API.Services.Interfaces;
+using WEBPC_API.Models.Enums; // [PHẦN 1] Import Enum
 using System.Text.RegularExpressions;
+using System.Data; // [PHẦN 4] Import để dùng IsolationLevel
 
 namespace WEBPC_API.Services.Business
 {
-    // Class nhỏ để đọc cấu hình Casso Settings
     public class CassoSettings
     {
         public string ApiKey { get; set; }
@@ -31,41 +32,49 @@ namespace WEBPC_API.Services.Business
         // --- PHẦN 1: TẠO QR THANH TOÁN ---
         public async Task<VietQrResponse> CreatePaymentQr(int maDonHang)
         {
-            // 1. Lấy thông tin đơn hàng
             var donHang = await _context.DonHang.FindAsync(maDonHang);
             if (donHang == null) throw new Exception("Đơn hàng không tồn tại.");
 
-            // 2. Tạo nội dung chuyển khoản chuẩn: "DH" + [Mã Code Đơn Hàng]
-            // Ví dụ: Đơn có mã CODE123 -> Nội dung CK: "DH CODE123"
-            // Lưu ý: Nội dung nên NGẮN GỌN, KHÔNG DẤU để ngân hàng không bị lỗi
+            // [PHẦN 1]: Dùng Enum kiểm tra trạng thái
+            if (donHang.trangThai == TrangThaiDonHang.DaThanhToan.ToString() ||
+                donHang.trangThai == TrangThaiDonHang.Huy.ToString() ||
+                donHang.trangThai == TrangThaiDonHang.HoanThanh.ToString())
+            {
+                throw new Exception($"Đơn hàng đang ở trạng thái '{donHang.trangThai}', không thể tạo thanh toán mới."); 
+            }
+
             string noiDungCK = $"DH {donHang.maCodeDonHang}";
 
-            // 3. Kiểm tra xem đã có bản ghi giao dịch (Pending) chưa, nếu chưa thì tạo
+            // [PHẦN 1]: Dùng Enum Pending
             var giaoDich = await _context.GiaoDichThanhToan
-                .FirstOrDefaultAsync(x => x.maDonHang == maDonHang && x.trangThai == "Pending");
+                .FirstOrDefaultAsync(x => x.maDonHang == maDonHang && x.trangThai == TrangThaiThanhToan.Pending.ToString());
 
             if (giaoDich == null)
             {
                 giaoDich = new GiaoDichThanhToan
                 {
                     maDonHang = maDonHang,
-                    phuongThuc = "VietQR", // Ghi nhận là thanh toán qua VietQR
+                    phuongThuc = "VietQR",
                     soTien = donHang.tongTien,
-                    trangThai = "Pending", // Chờ thanh toán
+                    trangThai = TrangThaiThanhToan.Pending.ToString(),
                     ngayTao = DateTime.Now
                 };
                 _context.GiaoDichThanhToan.Add(giaoDich);
                 await _context.SaveChangesAsync();
             }
+            else
+            {
+                giaoDich.ngayTao = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
 
-            // 4. Gọi Helper để tạo ảnh QR
             return await _vietQrHelper.GenerateQrAsync((double)donHang.tongTien, noiDungCK);
         }
 
-        // --- PHẦN 2: XỬ LÝ WEBHOOK (AUTO BANKING) ---
+        // --- PHẦN 2 & 4: XỬ LÝ WEBHOOK (AUTO BANKING) CÓ CONCURRENCY ---
         public async Task ProcessCassoWebhook(CassoWebhookData webhookData, string secureToken)
         {
-            // A. BẢO MẬT: Kiểm tra Token Casso
+            // Check bảo mật Token
             if (secureToken != _cassoSettings.ApiKey)
             {
                 throw new UnauthorizedAccessException("Casso Secure Token không hợp lệ!");
@@ -73,86 +82,120 @@ namespace WEBPC_API.Services.Business
 
             if (webhookData.data == null) return;
 
-            // B. Duyệt qua từng giao dịch mà Casso gửi về
             foreach (var trans in webhookData.data)
             {
-                // --- BƯỚC CẢI TIẾN: DÙNG REGEX TÁCH MÃ ---
+                // [PHẦN 4 - CONCURRENCY STEP 1] IDEMPOTENCY CHECK
+                // Kiểm tra ngay xem TID (Mã giao dịch ngân hàng) này đã được xử lý thành công chưa.
+                // Nếu đã có trong DB với trạng thái Success -> Bỏ qua ngay lập tức.
+                bool isProcessed = await _context.GiaoDichThanhToan
+                    .AnyAsync(g => g.maGiaoDichMomo == trans.tid
+                                && g.trangThai == TrangThaiThanhToan.Success.ToString());
 
-                // Pattern này nghĩa là: Tìm chữ "DH" theo sau là khoảng trắng, rồi lấy cụm ký tự phía sau
-                // Ví dụ: "NGUYEN VAN A CK DH CODE123" -> Nó sẽ bắt được "CODE123"
-                // RegexOptions.IgnoreCase: Không phân biệt hoa thường (dh, DH đều nhận)
+                if (isProcessed)
+                {
+                    Console.WriteLine($"[WEBHOOK] Bỏ qua giao dịch {trans.tid} - Đã xử lý trước đó.");
+                    continue; // Nhảy sang giao dịch tiếp theo trong danh sách
+                }
+
+                // Regex tìm mã đơn hàng
                 var match = Regex.Match(trans.description, @"DH\s+([A-Za-z0-9_-]+)", RegexOptions.IgnoreCase);
-
                 if (match.Success)
                 {
-                    // Lấy mã đơn hàng đã tách được (Group[1] là phần nằm trong ngoặc tròn)
                     string codeTimDuoc = match.Groups[1].Value;
 
-                    // --- TRUY VẤN TRỰC TIẾP (KHÔNG QUÉT TOÀN BỘ DB) ---
-                    // Chỉ tìm đúng 1 đơn hàng có mã code này và đang chờ xác nhận
-                    var order = await _context.DonHang
-                        .FirstOrDefaultAsync(d => d.maCodeDonHang == codeTimDuoc
-                                               && d.trangThai == "ChoXacNhan");
-
-                    // Nếu tìm thấy đơn hàng và số tiền chuyển >= tổng tiền
-                    if (order != null && trans.amount >= order.tongTien)
+                    // [PHẦN 4 - CONCURRENCY STEP 2] DATABASE LOCKING
+                    // Sử dụng IsolationLevel.Serializable để khóa chặt dữ liệu khi đang xử lý
+                    // Đảm bảo không có luồng nào khác chen ngang sửa đổi đơn hàng này
+                    using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable))
                     {
-                        // 1. Cập nhật trạng thái đơn hàng
-                        order.trangThai = "DaThanhToan";
-                        // Lưu ý: Nếu quy trình bên em là DaThanhToan -> Chờ Giao Hàng thì sửa lại enum tương ứng
-
-                        // 2. Cập nhật hoặc tạo mới GiaoDichThanhToan
-                        var gd = await _context.GiaoDichThanhToan
-                            .FirstOrDefaultAsync(g => g.maDonHang == order.maDonHang);
-
-                        if (gd != null)
+                        try
                         {
-                            gd.trangThai = "Success";
-                            gd.maGiaoDichMomo = trans.tid; // Lưu mã tham chiếu ngân hàng
-                            gd.ngayTao = DateTime.Now;
-                            gd.soTien = trans.amount; // Lưu số tiền thực tế khách chuyển
-                        }
-                        else
-                        {
-                            var newGd = new GiaoDichThanhToan
+                            // Truy vấn lại đơn hàng TRONG transaction để đảm bảo dữ liệu mới nhất
+                            var order = await _context.DonHang
+                                .FirstOrDefaultAsync(d => d.maCodeDonHang == codeTimDuoc);
+
+                            // Kiểm tra lại trạng thái một lần nữa trong vùng an toàn (Critical Section)
+                            if (order == null ||
+                                order.trangThai == TrangThaiDonHang.DaThanhToan.ToString() || // Đã thanh toán
+                                order.trangThai == TrangThaiDonHang.Huy.ToString())          // Hoặc đã hủy
                             {
-                                maDonHang = order.maDonHang,
-                                phuongThuc = "VietQR",
-                                soTien = trans.amount,
-                                trangThai = "Success",
-                                maGiaoDichMomo = trans.tid,
-                                ngayTao = DateTime.Now
-                            };
-                            _context.GiaoDichThanhToan.Add(newGd);
-                        }
+                                // Nếu đơn đã xong rồi thì thôi, không làm gì cả
+                                await transaction.RollbackAsync();
+                                continue;
+                            }
 
-                        // Ghi log ra console để em dễ debug khi chạy server
-                        Console.WriteLine($"[AUTO BANKING] Đã duyệt đơn: {order.maCodeDonHang} - Số tiền: {trans.amount}");
+
+                            // Kiểm tra số tiền
+                            if (trans.amount >= order.tongTien)
+                            {
+                                // 1. Cập nhật trạng thái đơn hàng -> DaThanhToan (Enum)
+                                order.trangThai = TrangThaiDonHang.DaThanhToan.ToString();
+
+                                // 2. Cập nhật GiaoDichThanhToan
+                                var gd = await _context.GiaoDichThanhToan
+                                    .FirstOrDefaultAsync(g => g.maDonHang == order.maDonHang
+                                                           && g.trangThai == TrangThaiThanhToan.Pending.ToString());
+
+                                if (gd != null)
+                                {
+                                    gd.trangThai = TrangThaiThanhToan.Success.ToString();
+                                    gd.maGiaoDichMomo = trans.tid; // Lưu TID để check Idempotency lần sau
+                                    gd.soTien = trans.amount;
+                                    gd.ngayTao = DateTime.Now;
+                                }
+                                else
+                                {
+                                    // Tạo mới nếu chưa có Pending
+                                    var newGd = new GiaoDichThanhToan
+                                    {
+                                        maDonHang = order.maDonHang,
+                                        phuongThuc = "VietQR",
+                                        soTien = trans.amount,
+                                        trangThai = TrangThaiThanhToan.Success.ToString(),
+                                        maGiaoDichMomo = trans.tid, // Lưu TID
+                                        ngayTao = DateTime.Now
+                                    };
+                                    _context.GiaoDichThanhToan.Add(newGd);
+                                }
+
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+
+                                Console.WriteLine($"[AUTO BANKING SUCCESS] Đã duyệt đơn: {order.maCodeDonHang} - TID: {trans.tid}");
+                            }
+                            else
+                            {
+                                // Chuyển thiếu tiền -> Chỉ log warning, không update đơn
+                                Console.WriteLine($"[AUTO BANKING WARNING] Đơn {order.maCodeDonHang} thiếu tiền. Cần: {order.tongTien}, Nhận: {trans.amount}");
+                                await transaction.RollbackAsync();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            Console.WriteLine($"[AUTO BANKING ERROR] Lỗi transaction: {ex.Message}");
+                            // Không throw lỗi ra ngoài để tránh Casso retry liên tục khi gặp lỗi logic nội bộ
+                            // Chỉ log lại để dev sửa
+                        }
                     }
                 }
             }
-
-            // C. Lưu tất cả thay đổi vào Database một lần cuối
-            await _context.SaveChangesAsync();
         }
 
-        // Thêm method này vào cuối class PaymentService
+        // --- PHẦN 3: KIỂM TRA TRẠNG THÁI ---
         public async Task<string> GetTransactionStatus(int maDonHang)
         {
-            // Kiểm tra trạng thái trong bảng GiaoDichThanhToan
-            var giaoDich = await _context.GiaoDichThanhToan
-                .Where(x => x.maDonHang == maDonHang)
-                .OrderByDescending(x => x.ngayTao)
-                .FirstOrDefaultAsync();
+            var donHang = await _context.DonHang.FindAsync(maDonHang);
 
-            // Nếu tìm thấy giao dịch thành công -> Trả về "PAID"
-            if (giaoDich != null && giaoDich.trangThai == "Success")
+            if (donHang != null && donHang.trangThai == TrangThaiDonHang.DaThanhToan.ToString())
             {
                 return "PAID";
             }
 
-            // Ngược lại -> "PENDING"
-            return "PENDING";
+            var giaoDichSuccess = await _context.GiaoDichThanhToan
+                .AnyAsync(x => x.maDonHang == maDonHang && x.trangThai == TrangThaiThanhToan.Success.ToString());
+
+            return giaoDichSuccess ? "PAID" : "PENDING";
         }
     }
 }
