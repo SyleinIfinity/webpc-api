@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\WEBPC_API.props" />
-</Project>
