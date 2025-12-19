@@ -53,5 +53,24 @@ namespace WEBPC_API.Controllers
 
             return NotFound(new { message = "Không tìm thấy khách hàng." });
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                // Gọi Service vừa viết (Lưu ý: Controller này phải Inject IUserService)
+                var result = await _userService.GetCustomerByIdAsync(id);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+            }
+        }
     }
 }

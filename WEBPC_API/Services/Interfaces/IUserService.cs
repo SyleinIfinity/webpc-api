@@ -25,6 +25,8 @@ namespace WEBPC_API.Services.Interfaces
         Task<(bool IsSuccess, string Message)> CreateKhachHang(KhachHangRequest req);
         Task<bool> UpdateKhachHang(int id, UpdateKhachHangRequest req);
 
+        Task<KhachHangResponse> GetCustomerByIdAsync(int maKhachHang);
+
         // 4. Quản lý Tài khoản (Cũ)
         Task<List<TaiKhoanResponse>> GetAllTaiKhoans();
         Task<bool> ChangePassword(int id, string newPass);

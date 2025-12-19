@@ -13,5 +13,12 @@ namespace WEBPC_API.Services.Interfaces
         Task<DonHangResponse?> GetOrderByIdAsync(int id);
         Task<List<DonHangResponse>> GetOrdersByCustomerAsync(int maKhachHang);
         Task CancelOrderAsync(int orderId, CancelOrderRequest request);
+
+        // Duyệt đơn hàng
+        Task<bool> ApproveOrderAsync(int maDonHang);
+
+        // Từ chối đơn hàng (Cần lý do)
+        Task<bool> RejectOrderAsync(int maDonHang, RejectOrderRequest request);
+
     }
 }

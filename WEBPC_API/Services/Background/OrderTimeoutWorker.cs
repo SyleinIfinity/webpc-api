@@ -19,20 +19,68 @@ namespace WEBPC_API.Services.Background
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Order Timeout Service is starting.");
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    await ProcessExpiredOrdersAsync(stoppingToken);
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+
+                        // Cấu hình thời gian timeout (15 phút)
+                        var timeoutThreshold = DateTime.Now.AddMinutes(-15);
+
+                        // Lấy danh sách các đơn hàng CẦN HỦY
+                        // CHỈ hủy đơn VietQR chưa thanh toán. KHÔNG ĐỤNG VÀO ĐƠN COD.
+                        var expiredOrders = await context.DonHang // Giữ nguyên DonHang nếu DBSet tên là DonHang
+                            .Where(dh =>
+                                // --- SỬA TÊN BIẾN THÀNH CHỮ THƯỜNG ---
+                                dh.phuongThucThanhToan == "VietQR" &&
+
+                                // Điều kiện 2: Chưa thanh toán hoặc chờ xác nhận
+                                (dh.trangThai == "ChoThanhToan" || dh.trangThai == "ChoXacNhan") &&
+
+                                // Điều kiện 3: Đã quá hạn 15 phút
+                                dh.ngayDat < timeoutThreshold)
+                            .Include(d => d.ChiTietDonHangs) // Include để hoàn kho
+                            .ToListAsync(stoppingToken);
+
+                        if (expiredOrders.Any())
+                        {
+                            foreach (var order in expiredOrders)
+                            {
+                                // 1. Cập nhật trạng thái (SỬA THÀNH CHỮ THƯỜNG)
+                                order.trangThai = "Huy";
+                                _logger.LogInformation($"[AutoCancel] Hủy đơn hàng #{order.maDonHang} (VietQR timeout).");
+
+                                // 2. Hoàn lại số lượng tồn kho
+                                if (order.ChiTietDonHangs != null)
+                                {
+                                    foreach (var ct in order.ChiTietDonHangs)
+                                    {
+                                        // --- SỬA LỖI DATA CONTEXT: SanPhams (Số nhiều) ---
+                                        // Và sửa thuộc tính maSanPham (chữ thường)
+                                        var sanPham = await context.SanPhams.FindAsync(ct.maSanPham);
+                                        if (sanPham != null)
+                                        {
+                                            sanPham.SoLuongTon += ct.soLuong; // Sửa soLuong thành chữ thường nếu cần
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Lưu thay đổi
+                            await context.SaveChangesAsync(stoppingToken);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Lỗi xảy ra trong quá trình quét đơn hàng hết hạn.");
+                    _logger.LogError(ex, "Lỗi trong quá trình quét đơn hàng hết hạn.");
                 }
 
-                await Task.Delay(_checkInterval, stoppingToken);
+                // Chờ 1 phút rồi quét lại
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
 

@@ -283,6 +283,34 @@ namespace WEBPC_API.Services.Business
             return true;
         }
 
+        // --- [MỚI] HÀM LẤY KHÁCH HÀNG THEO ID ---
+        public async Task<KhachHangResponse> GetCustomerByIdAsync(int maKhachHang)
+        {
+            // 1. Tìm khách hàng trong DB
+            // Lưu ý: Nếu GetByIdAsync của Repo chưa Include TaiKhoan, các trường liên quan TaiKhoan sẽ là null.
+            // Nếu cần thiết, bạn nên cập nhật Repository để Include TaiKhoan.
+            var kh = await _khRepo.GetByIdAsync(maKhachHang);
+
+            // 2. Kiểm tra tồn tại
+            if (kh == null)
+            {
+                throw new KeyNotFoundException($"Không tìm thấy khách hàng với mã: {maKhachHang}");
+            }
+
+            // 3. Map Entity sang DTO
+            return new KhachHangResponse
+            {
+                MaKhachHang = kh.MaKhachHang,
+                HoTen = kh.HoTen,
+                SoDienThoai = kh.SoDienThoai,
+                Email = kh.Email,
+                MaTaiKhoan = kh.MaTaiKhoan,
+                TenDangNhap = kh.TaiKhoan?.TenDangNhap, // Có thể null nếu Repo chưa Include
+                CoTaiKhoan = kh.MaTaiKhoan != null && kh.MaTaiKhoan > 0
+            };
+        }
+
+
         // ==========================================================
         // PHẦN 4: QUẢN LÝ TÀI KHOẢN
         // ==========================================================

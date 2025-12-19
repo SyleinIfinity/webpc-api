@@ -270,5 +270,109 @@ namespace WEBPC_API.Services.Business
                 }
             }
         }
+
+        // =========================================================
+        // 1. DUYỆT ĐƠN HÀNG (Approve)
+        // =========================================================
+        public async Task<bool> ApproveOrderAsync(int maDonHang)
+        {
+            // Lấy đơn hàng kèm chi tiết và giao dịch
+            var donHang = await _donHangRepo.GetOrderByIdFullAsync(maDonHang);
+
+            if (donHang == null)
+                throw new KeyNotFoundException($"Không tìm thấy đơn hàng #{maDonHang}");
+
+            // --- LOGIC KIỂM TRA THEO ENTITY CAMELCASE ---
+            if (donHang.phuongThucThanhToan == "COD")
+            {
+                // COD: Kiểm tra trạng thái (viết thường 'trangThai')
+                if (donHang.trangThai != "ChoXacNhan")
+                {
+                    throw new InvalidOperationException("Đơn hàng COD chỉ được duyệt khi đang ở trạng thái 'Chờ xác nhận'.");
+                }
+            }
+            else if (donHang.phuongThucThanhToan == "VietQR")
+            {
+                // VietQR: Kiểm tra bảng giao dịch (viết thường 'trangThai', 'ngayTao')
+
+                var transaction = donHang.GiaoDichThanhToans?
+                    .OrderByDescending(x => x.ngayTao) // Dùng 'ngayTao' thay vì NgayGiaoDich
+                    .FirstOrDefault(x => x.trangThai == "Success"); // Dùng 'trangThai'
+
+                if (transaction == null)
+                {
+                    throw new InvalidOperationException("Đơn hàng VietQR chưa được thanh toán thành công. Không thể duyệt.");
+                }
+
+                // Kiểm tra trạng thái đơn
+                if (donHang.trangThai != "ChoThanhToan" && donHang.trangThai != "ChoXacNhan" && donHang.trangThai != "DaThanhToan")
+                {
+                    throw new InvalidOperationException($"Trạng thái đơn hàng không hợp lệ để duyệt ({donHang.trangThai}).");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Phương thức thanh toán không hỗ trợ duyệt tự động.");
+            }
+
+            // --- THỰC HIỆN DUYỆT ---
+            donHang.trangThai = "DangGiao"; // Update 'trangThai'
+
+            await _donHangRepo.UpdateAsync(donHang);
+            return true;
+        }
+
+        // =========================================================
+        // 2. TỪ CHỐI ĐƠN HÀNG (Reject)
+        // =========================================================
+        public async Task<bool> RejectOrderAsync(int maDonHang, RejectOrderRequest request)
+        {
+            var donHang = await _donHangRepo.GetOrderByIdFullAsync(maDonHang);
+
+            if (donHang == null)
+                throw new KeyNotFoundException($"Không tìm thấy đơn hàng #{maDonHang}");
+
+            // --- LOGIC KIỂM TRA ---
+            if (donHang.phuongThucThanhToan == "COD")
+            {
+                if (donHang.trangThai != "ChoXacNhan")
+                {
+                    throw new InvalidOperationException("Chỉ có thể từ chối đơn COD khi đang 'Chờ xác nhận'.");
+                }
+            }
+            else if (donHang.phuongThucThanhToan == "VietQR")
+            {
+                // Check đã trả tiền chưa (dùng 'trangThai')
+                var daThanhToan = donHang.GiaoDichThanhToans != null &&
+                                  donHang.GiaoDichThanhToans.Any(x => x.trangThai == "Success");
+
+                if (daThanhToan)
+                {
+                    throw new InvalidOperationException("Đơn hàng VietQR đã thanh toán thành công. Vui lòng thực hiện quy trình Hoàn tiền/Hủy đặc biệt.");
+                }
+            }
+
+            // --- TỪ CHỐI (HỦY) ---
+            donHang.trangThai = "Huy";
+
+            // --- HOÀN LẠI KHO ---
+            if (donHang.ChiTietDonHangs != null)
+            {
+                foreach (var item in donHang.ChiTietDonHangs)
+                {
+                    // Dùng 'maSanPham' viết thường
+                    var sanPham = await _context.SanPhams.FindAsync(item.maSanPham);
+                    if (sanPham != null)
+                    {
+                        // Dùng 'soLuong' viết thường
+                        sanPham.SoLuongTon += item.soLuong;
+                    }
+                }
+            }
+
+            await _donHangRepo.UpdateAsync(donHang);
+            return true;
+        }
+
     }
 }
