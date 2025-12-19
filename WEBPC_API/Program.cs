@@ -129,7 +129,11 @@ builder.Services.AddScoped<INhatKyHoatDongRepository, NhatKyHoatDongRepository>(
 
 builder.Services.AddHostedService<OrderTimeoutWorker>();
 
+builder.Services.AddScoped<ForecastService>();
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<GeminiService>();
 
 
 // 3. Add services to the container.

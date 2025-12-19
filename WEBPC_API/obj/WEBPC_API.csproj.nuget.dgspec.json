@@ -59,6 +59,10 @@
               "target": "Package",
               "version": "[1.27.9, )"
             },
+            "Google_GenerativeAI": {
+              "target": "Package",
+              "version": "[3.4.1, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.14.1, )"
@@ -84,6 +88,18 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.7, )"
+            },
+            "Microsoft.ML": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.ML.Recommender": {
+              "target": "Package",
+              "version": "[0.23.0, )"
+            },
+            "Microsoft.ML.TimeSeries": {
+              "target": "Package",
+              "version": "[5.0.0, )"
             },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",

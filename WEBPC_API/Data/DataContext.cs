@@ -30,6 +30,8 @@ namespace WEBPC_API.Data
         public DbSet<ChiTietDonHang> ChiTietDonHang { get; set; }
         public DbSet<GiaoDichThanhToan> GiaoDichThanhToan { get; set; }
         public DbSet<NhatKyHoatDong> NhatKyHoatDong { get; set; }
+        public DbSet<PhienChat> PhienChats { get; set; }
+        public DbSet<ChiTietPhienChat> ChiTietPhienChats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -311,6 +313,23 @@ namespace WEBPC_API.Data
                       .HasForeignKey(e => e.MaNhanVien)
                       .OnDelete(DeleteBehavior.SetNull);
                 // QUAN TRỌNG: Nếu xóa nhân viên, log vẫn còn nhưng MaNhanVien = NULL
+            });
+
+            // --- CẤU HÌNH CHO CHATBOT ---
+            modelBuilder.Entity<PhienChat>(e =>
+            {
+                e.HasKey(x => x.MaPhien);
+                // Mỗi khách hàng chỉ có 1 phiên chat active tại 1 thời điểm (Logic quản lý)
+                e.HasIndex(x => x.MaKhachHang);
+            });
+
+            modelBuilder.Entity<ChiTietPhienChat>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.PhienChat)
+                 .WithMany(p => p.ChiTietPhienChats)
+                 .HasForeignKey(x => x.MaPhien)
+                 .OnDelete(DeleteBehavior.Cascade); // Xóa phiên -> Xóa hết tin nhắn
             });
         }
     }

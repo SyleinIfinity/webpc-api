@@ -1,5 +1,37 @@
 [
   {
+    "ContainingType": "WEBPC_API.Controllers.ChatBotController",
+    "Method": "AskBot",
+    "RelativePath": "api/ChatBot/ask",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "WEBPC_API.Models.DTOs.Requests.ChatRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.ChatBotController",
+    "Method": "GetHistory",
+    "RelativePath": "api/ChatBot/history",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maKhachHang",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WEBPC_API.Controllers.DanhMucController",
     "Method": "GetAll",
     "RelativePath": "api/DanhMuc",
@@ -1258,6 +1290,22 @@
         "Name": "request",
         "Type": "WEBPC_API.Controllers.UpdateStatusRequest",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WEBPC_API.Controllers.ThongKeMLController",
+    "Method": "GetChartData",
+    "RelativePath": "api/ThongKeML/bieu-do-chi-tieu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maKhachHang",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
