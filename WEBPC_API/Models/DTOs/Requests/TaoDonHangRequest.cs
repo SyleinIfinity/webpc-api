@@ -16,5 +16,9 @@ namespace WEBPC_API.Models.DTOs.Requests
         // [MỚI] Danh sách các ID (MaChiTietGioHang) được chọn để thanh toán
         // Client bắt buộc phải gửi cái này
         public List<int> SelectedCartItemIds { get; set; } = new List<int>();
+
+        // [MỚI - BỔ SUNG ĐỂ SỬA LỖI]
+        public string MaCodeVoucher { get; set; } // Hứng mã giảm giá
+        public decimal PhiVanChuyen { get; set; } // Hứng phí ship
     }
 }

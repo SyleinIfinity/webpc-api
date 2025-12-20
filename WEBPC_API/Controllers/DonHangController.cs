@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WEBPC_API.Models.DTOs.Requests;
 using WEBPC_API.Services.Interfaces;
 
@@ -198,6 +199,32 @@ namespace WEBPC_API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        [HttpPost("confirm-received/{id}")]
+        [Authorize(Roles = "KhachHang")] // Chỉ khách hàng mới được gọi
+        public async Task<IActionResult> ConfirmReceived(int id)
+        {
+            try
+            {
+                // Lấy ID khách từ Token
+                var maKhachHang = int.Parse(User.FindFirst("MaKhachHang")?.Value);
+
+                var result = await _donHangService.XacNhanNhanHangAsync(id, maKhachHang);
+
+                if (result)
+                {
+                    return Ok(new { message = "Xác nhận nhận hàng thành công!" });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Không thể xác nhận. Đơn hàng không ở trạng thái đang vận chuyển hoặc không tồn tại." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
         }
     }

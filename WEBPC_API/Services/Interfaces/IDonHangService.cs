@@ -20,5 +20,7 @@ namespace WEBPC_API.Services.Interfaces
         // Từ chối đơn hàng (Cần lý do)
         Task<bool> RejectOrderAsync(int maDonHang, RejectOrderRequest request);
 
+        Task<bool> XacNhanNhanHangAsync(int maDonHang, int maKhachHang);
+
     }
 }

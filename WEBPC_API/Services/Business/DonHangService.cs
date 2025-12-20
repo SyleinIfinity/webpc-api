@@ -22,10 +22,10 @@ namespace WEBPC_API.Services.Business
             _context = context;
         }
 
-        // --- 1. LOGIC TẠO ĐƠN HÀNG (ĐÃ FIX TÊN BIẾN VÀ LOGIC GIÁ) ---
+        // --- 1. LOGIC TẠO ĐƠN HÀNG (FULL: SHIP + VOUCHER) ---
         public async Task<DonHang> CreateOrderAsync(TaoDonHangRequest request)
         {
-            // Validate dữ liệu đầu vào
+            // 1. Validate cơ bản
             if (string.IsNullOrEmpty(request.PhuongThucThanhToan) ||
                (request.PhuongThucThanhToan != "COD" && request.PhuongThucThanhToan != "VietQR"))
             {
@@ -35,87 +35,118 @@ namespace WEBPC_API.Services.Business
             if (request.SelectedCartItemIds == null || !request.SelectedCartItemIds.Any())
                 throw new Exception("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
 
-            // Lấy giỏ hàng từ DB (Repository đã Include SanPham)
+            // 2. Lấy giỏ hàng
             var gioHang = await _gioHangRepo.GetByKhachHangIdAsync(request.MaKhachHang);
-
             if (gioHang == null || gioHang.ChiTietGioHangs == null || !gioHang.ChiTietGioHangs.Any())
                 throw new Exception("Giỏ hàng trống hoặc không tồn tại.");
 
-            // [QUAN TRỌNG]: Lọc sản phẩm theo MaChiTietGioHang (ID dòng)
+            // 3. Lọc sản phẩm user chọn mua
             var selectedItems = gioHang.ChiTietGioHangs
                 .Where(item => request.SelectedCartItemIds.Contains(item.MaChiTietGioHang))
                 .ToList();
 
             if (!selectedItems.Any())
-                throw new Exception("Các sản phẩm bạn chọn không hợp lệ hoặc không có trong giỏ hàng.");
+                throw new Exception("Sản phẩm chọn mua không hợp lệ.");
 
-            // Bắt đầu Transaction
+            // 4. Bắt đầu Transaction
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Tạo mã đơn hàng ngẫu nhiên
+                // -- A. Tính Tổng tiền hàng (Subtotal) --
+                decimal tongTienHang = 0;
+                var listChiTietDonHang = new List<ChiTietDonHang>();
+
+                foreach (var itemCart in selectedItems)
+                {
+                    if (itemCart.SanPham == null) continue;
+
+                    // Lấy giá ưu đãi nếu có
+                    decimal donGiaThucTe = (itemCart.SanPham.GiaKhuyenMai.HasValue && itemCart.SanPham.GiaKhuyenMai.Value > 0)
+                                           ? itemCart.SanPham.GiaKhuyenMai.Value
+                                           : itemCart.SanPham.GiaBan;
+
+                    var chiTiet = new ChiTietDonHang
+                    {
+                        maSanPham = itemCart.MaSanPham,
+                        soLuong = itemCart.SoLuong,
+                        donGiaLucMua = donGiaThucTe,
+                        thanhTien = itemCart.SoLuong * donGiaThucTe
+                    };
+
+                    listChiTietDonHang.Add(chiTiet);
+                    tongTienHang += chiTiet.thanhTien;
+                }
+
+                // -- B. Tính Giảm giá (Voucher) --
+                decimal tienGiam = 0;
+                if (!string.IsNullOrEmpty(request.MaCodeVoucher))
+                {
+                    // Tìm khuyến mãi theo mã Code & Còn hạn
+                    // Lưu ý: Kiểm tra kỹ tên thuộc tính trong Entity KhuyenMai của em (PascalCase hay camelCase)
+                    // Ở đây thầy dùng PascalCase (MaCodeKM) làm chuẩn. Nếu DB em dùng maCodeKM thì sửa lại nhé.
+                    var voucher = await _context.KhuyenMais
+                        .FirstOrDefaultAsync(k => k.MaCodeKM == request.MaCodeVoucher &&
+                                                  k.NgayBatDau <= DateTime.Now &&
+                                                  k.NgayKetThuc > DateTime.Now);
+
+                    if (voucher != null)
+                    {
+                        // Kiểm tra đơn tối thiểu
+                        if (voucher.DonHangToiThieu <= tongTienHang)
+                        {
+                            if (voucher.LoaiGiam == "DIRECT")
+                            {
+                                tienGiam = voucher.GiaTriGiam;
+                            }
+                            else // PERCENT
+                            {
+                                tienGiam = (tongTienHang * voucher.GiaTriGiam) / 100;
+                                // Kiểm tra trần giảm tối đa (nếu có)
+                                if (voucher.GiamToiDa.HasValue && voucher.GiamToiDa.Value > 0 && tienGiam > voucher.GiamToiDa.Value)
+                                {
+                                    tienGiam = voucher.GiamToiDa.Value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // -- C. Phí vận chuyển --
+                decimal phiShip = request.PhiVanChuyen; // Lấy từ Client gửi lên
+
+                // -- D. Tổng thanh toán cuối cùng --
+                decimal tongThanhToan = tongTienHang + phiShip - tienGiam;
+                if (tongThanhToan < 0) tongThanhToan = 0;
+
+                // -- E. Tạo Đơn Hàng --
                 string maCode = "DH" + DateTime.Now.ToString("yyMMdd") + new Random().Next(1000, 9999);
 
-                // Khởi tạo đối tượng DonHang (Sử dụng đúng tên thuộc tính camelCase như Entity)
                 var donHang = new DonHang
                 {
                     maCodeDonHang = maCode,
                     maKhachHang = request.MaKhachHang,
                     ngayDat = DateTime.Now,
-
-                    // Logic Trạng thái
-                    trangThai = request.PhuongThucThanhToan == "VietQR"
-                                ? TrangThaiDonHang.ChoThanhToan.ToString()
-                                : TrangThaiDonHang.ChoXacNhan.ToString(),
-
+                    trangThai = request.PhuongThucThanhToan == "VietQR" ? TrangThaiDonHang.ChoThanhToan.ToString() : TrangThaiDonHang.ChoXacNhan.ToString(),
                     phuongThucThanhToan = request.PhuongThucThanhToan,
                     nguoiNhan = request.NguoiNhan,
                     soDienThoaiGiao = request.SoDienThoai,
                     diaChiGiaoHang = request.DiaChiGiaoHang,
 
-                    // [LƯU Ý]: Entity DonHang không có cột GhiChu nên ta bỏ qua request.GhiChu
+                    // Lưu các giá trị tiền
+                    phiVanChuyen = phiShip,
+                    tongTien = tongThanhToan, // Đã trừ giảm giá và cộng ship
 
-                    phiVanChuyen = 0,
-                    ChiTietDonHangs = new List<ChiTietDonHang>()
+                    // Gán chi tiết
+                    ChiTietDonHangs = listChiTietDonHang
                 };
 
-                decimal tongTienHang = 0;
-
-                foreach (var itemCart in selectedItems)
-                {
-                    if (itemCart.SanPham == null)
-                        throw new Exception($"Sản phẩm (ID: {itemCart.MaSanPham}) không tồn tại.");
-
-                    // [TÍNH GIÁ]: Lấy giá ưu tiên khuyến mãi từ bảng SanPham
-                    decimal donGiaThucTe = (itemCart.SanPham.GiaKhuyenMai.HasValue && itemCart.SanPham.GiaKhuyenMai.Value > 0)
-                                           ? itemCart.SanPham.GiaKhuyenMai.Value
-                                           : itemCart.SanPham.GiaBan;
-
-                    // Tạo ChiTietDonHang (Sử dụng đúng tên thuộc tính camelCase)
-                    var chiTiet = new ChiTietDonHang
-                    {
-                        maSanPham = itemCart.MaSanPham,
-
-                        // [ĐÃ BỎ]: tenSanPham, hinhAnh (Vì Entity ChiTietDonHang không lưu)
-
-                        soLuong = itemCart.SoLuong,
-                        donGiaLucMua = donGiaThucTe, // Lưu giá bán tại thời điểm mua
-                        thanhTien = itemCart.SoLuong * donGiaThucTe
-                    };
-
-                    donHang.ChiTietDonHangs.Add(chiTiet);
-                    tongTienHang += chiTiet.thanhTien;
-                }
-
-                // Cập nhật tổng tiền cuối cùng
-                donHang.tongTien = tongTienHang + donHang.phiVanChuyen;
-
-                // Lưu vào Database
+                // Lưu vào DB
                 await _donHangRepo.AddAsync(donHang);
 
-                // Xóa các món đã mua khỏi giỏ hàng
+                // Xóa giỏ hàng
                 await _gioHangRepo.RemoveCartItemsAsync(gioHang.MaGioHang, request.SelectedCartItemIds);
 
+                // Commit
                 await transaction.CommitAsync();
 
                 return donHang;
@@ -123,11 +154,6 @@ namespace WEBPC_API.Services.Business
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-
-                var innerMessage = ex.InnerException?.Message ?? "";
-                if (innerMessage.Contains("FK_") || innerMessage.Contains("REFERENCE"))
-                    throw new Exception("Lỗi dữ liệu ràng buộc (Khóa ngoại). Vui lòng kiểm tra lại.");
-
                 throw new Exception("Đặt hàng thất bại: " + ex.Message);
             }
         }
@@ -374,5 +400,41 @@ namespace WEBPC_API.Services.Business
             return true;
         }
 
+        public async Task<bool> XacNhanNhanHangAsync(int maDonHang, int maKhachHang)
+        {
+            // 1. [SỬA TÊN DBSET]: Trong DataContext em đặt là DonHang (số ít)
+            // 2. [SỬA TÊN BIẾN]: maDonHang (chữ thường)
+            var donHang = await _context.DonHang.FirstOrDefaultAsync(x => x.maDonHang == maDonHang);
+
+            // 3. [SỬA TÊN BIẾN]: maKhachHang (chữ thường)
+            if (donHang == null || donHang.maKhachHang != maKhachHang) return false;
+
+            // 4. [SỬA ENUM]: Trong file Enum tên là 'DangGiao', không phải 'DangVanChuyen'
+            // Do DB lưu chuỗi, nên ta so sánh chuỗi
+            if (donHang.trangThai != TrangThaiDonHang.DangGiao.ToString()) return false;
+
+            // 5. Cập nhật trạng thái -> HoanThanh
+            donHang.trangThai = TrangThaiDonHang.HoanThanh.ToString();
+
+            // [LƯU Ý]: Entity DonHang của em KHÔNG CÓ cột 'trangThaiThanhToan', 
+            // nên thầy bỏ đoạn update thanh toán đi để tránh lỗi.
+            // Trạng thái 'HoanThanh' của đơn hàng đã ngầm hiểu là quy trình kết thúc (đã trả tiền).
+
+            // 6. [SỬA LOG]:
+            // - DbSet là NhatKyHoatDong (số ít)
+            // - Entity không có MaNguoiDung, chỉ có MaNhanVien.
+            // - Giải pháp: Ghi ID khách vào cột MoTa.
+            _context.NhatKyHoatDong.Add(new NhatKyHoatDong
+            {
+                MaNhanVien = null, // Khách hàng làm, không phải nhân viên
+                HanhDong = "Xác nhận nhận hàng", // [SỬA]: Mapping vào cột HanhDong
+                MoTa = $"Khách hàng {maKhachHang} xác nhận hoàn thành đơn #{maDonHang}", // Ghi chi tiết vào đây
+                ThoiGian = DateTime.Now
+                // IPThucHien có thể để null hoặc lấy từ request nếu cần
+            });
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

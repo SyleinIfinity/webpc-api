@@ -29,7 +29,14 @@ namespace WEBPC_API.Services.Business
                 NgayThuThap = x.NgayThuThap,
                 // Lấy thông tin từ bảng cha include
                 MaCodeKM = x.KhuyenMai?.MaCodeKM,
-                TenChuongTrinh = x.KhuyenMai?.TenChuongTrinh
+                TenChuongTrinh = x.KhuyenMai?.TenChuongTrinh,
+
+                GiaTriGiam = x.KhuyenMai?.GiaTriGiam ?? 0,
+                LoaiGiam = x.KhuyenMai?.LoaiGiam,
+                DonHangToiThieu = x.KhuyenMai?.DonHangToiThieu ?? 0,
+                GiamToiDa = x.KhuyenMai?.GiamToiDa,
+                NgayBatDau = x.KhuyenMai?.NgayBatDau ?? DateTime.MinValue,
+                NgayKetThuc = x.KhuyenMai?.NgayKetThuc ?? DateTime.MinValue
             });
         }
 

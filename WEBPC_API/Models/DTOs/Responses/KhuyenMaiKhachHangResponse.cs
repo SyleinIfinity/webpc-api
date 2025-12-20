@@ -9,5 +9,12 @@
         public string TenChuongTrinh { get; set; } // Lấy từ bảng cha
         public bool DaSuDung { get; set; }
         public DateTime? NgayThuThap { get; set; }
+
+        public decimal GiaTriGiam { get; set; }
+        public string LoaiGiam { get; set; }
+        public decimal DonHangToiThieu { get; set; }
+        public decimal? GiamToiDa { get; set; }
+        public DateTime NgayBatDau { get; set; }
+        public DateTime NgayKetThuc { get; set; }
     }
 }
