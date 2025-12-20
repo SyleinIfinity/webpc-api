@@ -101,7 +101,7 @@ namespace WEBPC_API.Services.Business
 
             YÊU CẦU:
             - Trả lời tiếp nối câu chuyện trong lịch sử (nếu có).
-            - Nếu gợi ý sản phẩm, dùng link Markdown: [Tên Sản Phẩm]({frontendUrl}/chiProduct/Detail/{{id}})
+            - Nếu gợi ý sản phẩm, dùng link Markdown: [Tên Sản Phẩm]({frontendUrl}/Product/Detail/{{id}})
             - Ngắn gọn, thân thiện.
             ";
 

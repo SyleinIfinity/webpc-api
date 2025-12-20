@@ -172,19 +172,21 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 // 4. Cau hinh CORS (Cho phep WEBPC_WEB goi)
+// 4. Cấu hình CORS (Cho phép TẤT CẢ gọi vào)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.WithOrigins() // URL cua du an WEBPC_WEB (MVC)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()   // <--- SỬA THÀNH CÁI NÀY
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
 
 var app = builder.Build();
+
+app.UseCors("AllowAll"); // Ap dung CORS
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -194,8 +196,6 @@ var app = builder.Build();
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowAll"); // Ap dung CORS
 
 // --- 5. KÍCH HOẠT AUTHENTICATION (Thứ tự quan trọng!) ---
 app.UseAuthentication();
