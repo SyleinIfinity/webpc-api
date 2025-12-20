@@ -174,10 +174,10 @@ builder.Services.AddSwaggerGen(option =>
 // 4. Cau hinh CORS (Cho phep WEBPC_WEB goi)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowWebApp",
+    options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5152","http://localhost:5152") // URL cua du an WEBPC_WEB (MVC)
+            policy.WithOrigins() // URL cua du an WEBPC_WEB (MVC)
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -195,7 +195,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowWebApp"); // Ap dung CORS
+app.UseCors("AllowAll"); // Ap dung CORS
 
 // --- 5. KÍCH HOẠT AUTHENTICATION (Thứ tự quan trọng!) ---
 app.UseAuthentication();
