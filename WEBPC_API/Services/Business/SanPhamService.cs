@@ -89,6 +89,11 @@ namespace WEBPC_API.Services.Business
 
             if (request.GiaKhuyenMai.HasValue)
                 product.GiaKhuyenMai = request.GiaKhuyenMai.Value;
+            else
+            {
+                // Không có giá trị (null) → XÓA khuyến mãi
+                product.GiaKhuyenMai = null;
+            }
 
             if (request.TrangThai.HasValue)
                 product.TrangThai = request.TrangThai.Value;
